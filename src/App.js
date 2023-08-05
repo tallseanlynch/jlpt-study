@@ -35,11 +35,9 @@ function App() {
   const [vocabularyList, setVocabularyList] = useState(true);
   const [resultsInteractionMode, setResultsInteractionMode] = useState('');
   const [listPlayerIndex, setListPlayerIndex] = useState(0);
-  // const [countdown, setCountdown] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [searchArray, setSearchArray] = useState([]);
   const [userInputTag, setUserInputTag] = useState('');
-  const [exactOrder, setExactOrder] = useState(false);
   const [minScore, setMinScore] = useState(0)
   const [maxScore, setMaxScore] = useState(0)
   const [staticList, setStaticList] = useState([])
@@ -208,12 +206,10 @@ function App() {
   
       if(filterArray.length > 0) {
           setResults(filterArray.sort((a, b) => {
-            if(exactOrder) { return 0 }
             let aCommons = [...a.kana.filter(k => k.common === true), ...a.kanji.map(k => k.common === true)]
             let bCommons = [...b.kana.filter(k => k.common === true), ...b.kanji.map(k => k.common === true)]
             return bCommons.length - aCommons.length
           }).sort((a,b) => {
-            if(exactOrder) { return 0 }
             let isUserDataVocabA = userData.words[a.id] !== undefined ? 1 : 0
             let isUserDataVocabB = userData.words[b.id] !== undefined ? 1 : 0
             return isUserDataVocabB - isUserDataVocabA
@@ -226,7 +222,7 @@ function App() {
       }            
     }
     handleSearchFilter()
-  }, [exactKanjiKana, exactOrder, exactSearch, isPlaying, listPlayerIndex, userData, vocabularyList])
+  }, [exactKanjiKana, exactSearch, isPlaying, listPlayerIndex, userData, vocabularyList])
 
   const onInputChange = (e) => {
     setSearchValue(String(e.target.value))
@@ -350,9 +346,6 @@ function App() {
             return { ...ud, tags: [addedDateFormatted] }  
         })
         .sort((a, b) => {
-            if(exactOrder === true) {
-              return 0
-            }
             let aTimestamp = userData.words[a.id].events.filter(e => {
               return e.type === 'addedDate'
             })[0].t
@@ -455,8 +448,7 @@ function App() {
     tagListExactSearch,
     maxScore,
     minScore,
-    userDataEntries,
-    exactOrder
+    userDataEntries
   ])
 
   useEffect(() => {
@@ -505,16 +497,7 @@ function App() {
                   setExactKanjiKana(!exactKanjiKana)
                 }
               }
-            >Single Word</button>
-            {/* <button
-              style={{transition: 'all 300ms', width: '150px'}}
-              className={`${exactOrder ? activeClass : inactiveClass} text-sm px-4 rounded-lg ml-2 inline-block`}
-              onClick={() => {
-                  setExactOrder(!exactOrder)
-                }
-              }
-            >Exact Order</button> */}
-            
+            >Single Word</button>            
           </span>
         </div>          
         
@@ -815,10 +798,8 @@ function App() {
                 `}
               </style>
               <div className={`flex ${resultsViewMode === 'notecard' ? 'flex-wrap self-start justify-start' : 'flex-col justify-start'} `}>
-                {(textMode === true && vocabularyList && activeVocabulary && (<div>Textmode</div>)
-                )}
-                {
-                  (textMode === false && vocabularyList === false && results.length > 0 && isPlaying === false) && (
+                {(textMode === true && vocabularyList && activeVocabulary && (<div>Textmode</div>))}
+                {(textMode === false && vocabularyList === false && results.length > 0 && isPlaying === false) && (
                   results
                   .slice(0, 50)
                   .map(r => DisplayVocab({
@@ -852,25 +833,24 @@ function App() {
                     studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
                   })
                 ))}
-                {
-                  (textMode === false && vocabularyList !== false && isPlaying === true) && (
-                    staticList
-                    .filter((f, fi) => {
-                      return isPlaying ? (fi === listPlayerIndex) : f 
-                    })
-                    .map(r => DisplayVocab({
-                      vocab: r, 
-                      parentSetter: setSearchValue, 
-                      userDataId: userData.words[r.id], 
-                      userData: userData, 
-                      setUserData: setUserData, 
-                      type: resultsViewMode, 
-                      exactKanjiKana: exactKanjiKana, 
-                      searchArray: searchArray, 
-                      resultsInteractionMode: resultsInteractionMode, 
-                      setTagListSearchValue: setTagListSearchValue, 
-                      studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
-                    }))
+                {(textMode === false && vocabularyList !== false && isPlaying === true) && (
+                  staticList
+                  .filter((f, fi) => {
+                    return isPlaying ? (fi === listPlayerIndex) : f 
+                  })
+                  .map(r => DisplayVocab({
+                    vocab: r, 
+                    parentSetter: setSearchValue, 
+                    userDataId: userData.words[r.id], 
+                    userData: userData, 
+                    setUserData: setUserData, 
+                    type: resultsViewMode, 
+                    exactKanjiKana: exactKanjiKana, 
+                    searchArray: searchArray, 
+                    resultsInteractionMode: resultsInteractionMode, 
+                    setTagListSearchValue: setTagListSearchValue, 
+                    studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
+                  }))
                 )}
               </div>
             </div>
