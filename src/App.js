@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   openWindowWithString, 
   commaSeparateList, 
@@ -67,16 +67,16 @@ function App() {
     setUserDataEntries([...userDataEntries, ...filteredDataEntries])
   }
 
-  const testVocabId = (score, id) => {
-    let userDataCopy = { ...userData }
-    if(userData.words[id].events !== undefined){
-      userDataCopy.words[id].events.push(createScore(score))
-    } 
-    saveUserData(userDataCopy)
-    setUserData(userDataCopy)
-  }
+  // const testVocabId = (score, id) => {
+  //   let userDataCopy = { ...userData }
+  //   if(userData.words[id].events !== undefined){
+  //     userDataCopy.words[id].events.push(createScore(score))
+  //   } 
+  //   saveUserData(userDataCopy)
+  //   setUserData(userDataCopy)
+  // }
 
-  const getAllAddedDates = () => {
+  const getAllAddedDates = useCallback(() => {
     const uniqueDates = []
     Object.keys(userData.words).forEach((ud, udi) => {
       let addedDate = new Date(userData.words[ud].events.filter(e => {
@@ -101,11 +101,11 @@ function App() {
       return 0;
     });
     return sortedDates
-  }
+  }, [userData])
 
-  const TextVocabWord = (word, id, score = -10) => {
-    return (<span onClick={testVocabId(score, id)}>{word}</span>)
-  }
+  // const TextVocabWord = (word, id, score = -10) => {
+  //   return (<span onClick={testVocabId(score, id)}>{word}</span>)
+  // }
 
   const testVocab = (score) => {
     let userDataCopy = { ...userData }
@@ -181,7 +181,7 @@ function App() {
   }
   
 
-  const searchFilter = (e) => {
+  const searchFilter = useCallback((e) => {
     async function handleSearchFilter() {
       if(String(e.target.value).length === 0 && vocabularyList === false){
         return
@@ -207,10 +207,6 @@ function App() {
       }
   
       if(filterArray.length > 0) {
-        // console.log(filterArray);
-        // if(filterArray.length > 150){
-        //   setResults(filterArray.slice(0, 150))
-        // } else {
           setResults(filterArray.sort((a, b) => {
             if(exactOrder) { return 0 }
             let aCommons = [...a.kana.filter(k => k.common === true), ...a.kanji.map(k => k.common === true)]
@@ -222,17 +218,15 @@ function App() {
             let isUserDataVocabB = userData.words[b.id] !== undefined ? 1 : 0
             return isUserDataVocabB - isUserDataVocabA
           })
-          // .slice(0, 25)
           .filter((f, fi) => {
             return isPlaying ? (fi === listPlayerIndex) : f 
           }))
-        // }
       } else {
         setResults([])
       }            
     }
     handleSearchFilter()
-  }
+  }, [exactKanjiKana, exactOrder, exactSearch, isPlaying, listPlayerIndex, userData, vocabularyList])
 
   const onInputChange = (e) => {
     setSearchValue(String(e.target.value))
@@ -302,7 +296,10 @@ function App() {
     }
   }, [
     userData,
-    activeVocabulary
+    activeVocabulary,
+    getAllAddedDates,
+    isPlaying,
+    userDataEntries
   ])
 
   // useEffect(() => {
@@ -317,7 +314,7 @@ function App() {
       .then((res) => res.json())
       .then((jsonResponseData) => setUserData(jsonResponseData))
     }
-  }, [])
+  })
 
 
   // handles the users history and vocab on the left side of the application
@@ -450,11 +447,21 @@ function App() {
 
     handleUserData()
 
-  }, [userData, listSearchValue, tagListSearchValue, listExactSearch, tagListExactSearch, maxScore, minScore, userDataEntries])
+  }, [
+    userData,
+    listSearchValue,
+    tagListSearchValue,
+    listExactSearch,
+    tagListExactSearch,
+    maxScore,
+    minScore,
+    userDataEntries,
+    exactOrder
+  ])
 
   useEffect(() => {
     searchFilter({target: { value: searchValue }})
-  }, [exactSearch, searchValue, exactKanjiKana])
+  }, [exactSearch, searchValue, exactKanjiKana, searchFilter])
 
   const search = (searchQueryArray) => {
     return fetch('http://localhost:9999/search', {
@@ -558,7 +565,7 @@ function App() {
                   }
                 }
               >
-                <img style={{minHeight: '12px', minWidth: '12px', maxHeight: '12px', maxWidth: '12px'}} src={copy}></img>
+                <img alt="copy selection" style={{minHeight: '12px', minWidth: '12px', maxHeight: '12px', maxWidth: '12px'}} src={copy}></img>
               </button>
               <button
                 style={{transition: 'all 300ms'}}
