@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- my study vocab -->
+  <script src="./study.js"></script>
+  <script src="./study2.js"></script>
+  <!-- kanji full list -->
+  <script src="./fullKanjiArray.js"></script>
+  <!-- jlpt specific vocab data -->
+  <script src="./jlptVocab.js"></script>
+
+<script>
+
+    const exampleFullKanjiArrayItem = {
+        "strokes": 2,
+        "grade": 1,
+        "freq": 55,
+        "jlpt_old": 4,
+        "jlpt_new": 5,
+        "meanings": [
+            "Nine"
+        ],
+        "readings_on": [
+            "きゅう",
+            "く"
+        ],
+        "readings_kun": [
+            "ここの",
+            "ここの.つ"
+        ],
+        "wk_level": 1,
+        "wk_meanings": [
+            "Nine"
+        ],
+        "wk_readings_on": [
+            "く",
+            "きゅう"
+        ],
+        "wk_readings_kun": [
+            "!ここの"
+        ],
+        "wk_radicals": [
+            "Nine"
+        ],
+        "kanji": "九"
+    }
+
+    const songACards = [
+        {j: "こちら", f: "こちら", e: "here/this place"},
+        {j: "大阪", f: "おおさか", e: "Osaka (city in Japan)"},
+        {j: "生野区", f: "いくのく", e: "Ikuno Ward (in Osaka)"},
+        {j: "朝鮮人部落", f: "ちょうせんじんぶらく", e: "Korean settlement"},
+        {j: "ﾌﾟﾙﾙﾙ", f: "ぷるるる", e: "sound effect for a ringing phone"},
+        {j: "電話", f: "でんわ", e: "phone"},
+        {j: "ひっきりなしに", f: "ひっきりなしに", e: "non-stop/constantly"},
+        {j: "なりまくる", f: "なりまくる", e: "to become/to be filled with"},
+        {j: "そろそろ", f: "そろそろ", e: "soon/almost"},
+        {j: "仕事", f: "しごと", e: "work/job"},
+        {j: "プルッてる", f: "ぷるってる", e: "the sound of pulling something quickly"},
+        {j: "場合", f: "ばあい", e: "situation/case"},
+        {j: "じゃない", f: "じゃない", e: "negative form of です (desu)"},
+        {j: "よ", f: "よ", e: "sentence-ending particle for emphasis"},
+    ];
+
+    const songBCards = [{ j: "くれるだけくれよ", f: "くれるだけくれよ", e: "Just give me everything you can" }, { j: "ありのままの", f: "ありのままの", e: "Just the way it is" }, { j: "嫌味ありがたく", f: "いやみありがたく", e: "Thank you for the sarcasm" }, { j: "いただけるかも今の気分", f: "いただけるかもいまのきぶん", e: "I might be able to take it, depending on my mood" }, { j: "なんだか気は張ってる", f: "なんだかきははってる", e: "I feel tense for some reason" }, { j: "四六時中", f: "しろくじちゅう", e: "24/7" }, { j: "いつ何時でも", f: "いつなんどきでも", e: "Anytime, anywhere" }, { j: "己の敵は自分", f: "おのれのてきはじぶん", e: "I am my own enemy" }, { j: "クソッタレ", f: "くそったれ", e: "Piece of crap" }, { j: "気にせん全然", f: "きにせんぜんぜん", e: "I don't care at all" }, { j: "I ain’t on top of all ya for you to start testing", f: "I ain’t on top of all ya for you to start testing", e: "I'm not watching you so you can test me" }, { j: "ていうかこんなとこいないよ先生", f: "ていうかこんなとこいないよせんせい", e: "Well, there's no need for that kind of thing, teacher" }, { j: "今夜もヤサに篭もって燃やすSENSI", f: "こんやもやさにこもってもやすSENSI", e: "Tonight, I'll be holed up burning with Sensi" }, { j: "デンジャー", f: "でんじゃー", e: "Danger" }, { j: "危険だ", f: "きけんだ", e: "It's dangerous" }, { j: "黄色い信号", f: "きいろいしんごう", e: "Yellow light" }]
+
+    const songDCards = [
+  { j: 'より良い', f: 'より よい', e: 'Better' },
+  { j: '結果', f: 'けっか', e: 'Result' },
+  { j: 'ためこらえて', f: 'ためこらえて', e: 'Endure' },
+  { j: '辛抱', f: 'しんぼう', e: 'Patience' },
+  { j: '俺の', f: 'おれの', e: 'My' },
+  { j: 'ハイライフ', f: 'はいらいふ', e: 'High life' },
+  { j: '関係ない', f: 'かんけいない', e: 'Irrelevant' },
+  { j: '金土', f: 'きんど', e: 'Friday and Saturday' },
+  { j: 'ぶら下がってん', f: 'ぶらさがっている', e: 'Hanging' },
+  { j: 'チンポ', f: 'チンポ', e: 'Penis (vulgar)' },
+  { j: 'しっぽ', f: 'しっぽ', e: 'Tail' },
+  { j: '見せたら', f: 'みせたら', e: 'If I show' },
+  { j: '潰される', f: 'つぶされる', e: 'Will be crushed' },
+  { j: 'そんな', f: 'そんな', e: 'Such' },
+  { j: 'しっとりした', f: 'しっとりした', e: 'Moist' },
+  { j: 'パンチライン', f: 'パンチライン', e: 'Punch line' },
+  { j: '心', f: 'こころ', e: 'Heart' },
+  { j: '響かせん', f: 'ひびかせん', e: 'Does not resonate' },
+  { j: '面倒', f: 'めんどう', e: 'Troublesome' },
+  { j: '妬み', f: 'ねたみ', e: 'Jealousy' },
+  { j: '嫉妬', f: 'しっと', e: 'Envy' },
+  { j: '疲れ困る', f: 'つかれこまる', e: 'Tired and troubled' },
+  { j: '結構', f: 'けっこう', e: 'Quite' },
+  { j: 'いいところ', f: 'いいところ', e: 'Good place' },
+];
+
+const songECards = [
+  {j: 'クリティカルヒット', f: 'くりてぃかるひっと', e: 'critical hit'},
+  {j: 'お前', f: 'おまえ', e: 'you'},
+  {j: 'ピンポイント', f: 'ぴんぽいんと', e: 'bullseye'},
+  {j: 'よりいってる', f: 'よりいってる', e: 'better'},
+  {j: '結構', f: 'けっこう', e: 'quite'},
+  {j: 'いいところ', f: 'いいところ', e: 'a good spot'},
+  {j: '探せ', f: 'さがせ', e: 'search'},
+  {j: '拠り所', f: 'よりどころ', e: 'support/base'},
+  {j: '離れなかった', f: 'はなれなかった', e: 'didn\'t leave'},
+  {j: '薬', f: 'くすり', e: 'medicine'},
+  {j: '売買', f: 'ばいばい', e: 'buying and selling'},
+  {j: 'ヤク中', f: 'やくちゅう', e: 'drug addiction'},
+  {j: '生活', f: 'せいかつ', e: 'life'},
+  {j: 'バイバイ', f: 'ばいばい', e: 'goodbye'},
+  {j: '我忘れ', f: 'わすれ', e: 'forget oneself'},
+  {j: '街', f: 'まち', e: 'town'},
+  {j: '徘徊', f: 'はいかい', e: 'wandering'},
+  {j: 'ぶら下がって', f: 'ぶらさがって', e: 'hanging around'},
+  {j: 'ぶんどった', f: 'ぶんどった', e: 'brawled'},
+  {j: 'ライフスタイル', f: 'らいふすたいる', e: 'lifestyle'},
+  {j: '石ころ', f: 'いしころ', e: 'pebble'},
+  {j: '蹴り飛ばし', f: 'けりとばし', e: 'kicking away'},
+  {j: '歩いた', f: 'あるいた', e: 'walked'}
+];
+
+const songFCards = [  { j: 'この', f: '', e: '' },  { j: '道端に', f: '', e: '' },  { j: 'ツバ吐き', f: '', e: 'spitting on the roadside' },  { j: '肩で', f: '', e: 'with shoulders' },  { j: '風を', f: '', e: 'cutting through the wind' },  { j: '切る', f: '', e: 'cutting' },  { j: '身内は身内で', f: '', e: 'family is family' },  { j: 'よそはよそ', f: '', e: 'outsiders are outsiders' },  { j: '福は内で鬼は外', f: '', e: 'good luck stays inside, demons stay outside' },  { j: 'でも世間は鬼', f: '', e: 'but the world is full of demons' },  { j: '限られた', f: '', e: 'limited' },  { j: '仲間たちと', f: '', e: 'with comrades' },  { j: '生きる', f: '', e: 'to live' },  { j: 'でも', f: '', e: 'but' },  { j: 'くたばる', f: '', e: 'to die' },  { j: '時ぐらい', f: '', e: 'at least at the time' },  { j: '一人で', f: '', e: 'alone' },  { j: '死ぬ', f: '', e: 'to die' },  { j: 'おい、調子に乗るなよ', f: '', e: 'hey, don\'t get carried away' },  { j: 'クソガキ', f: '', e: 'piece of shit kid' }, { j: `You better listen. If you don’t wanna messin’ with my squad`, e: `You better listen. If you don’t wanna messin’ with my squad`, f: ''}]
+
+
+
+
+    const JapaneseWord = ({e, f, j}) => {
+        const wordMarkUp =  `
+            <div class="word-container flex flex-col justify-end p-2">
+                <div class="english-translation text-sm p1 text-slate-400">${e}</div>
+                <div class="furigana p1">${f}</div>
+                <div class="japanese-word text-3xl font-bold p1">${j}</div>
+            </div>`
+
+        return wordMarkUp
+    }
+
+    const Paragraph = (words) => {
+        let paragraph = ''
+
+        words.forEach(w => {
+            paragraph += JapaneseWord(w)
+        })
+
+        return paragraph
+    }
+
+    const init = () => {
+        
+        document.querySelector('.app').innerHTML = displayVocab(testVocab[0])
+        // document.querySelector('.app').innerHTML = Paragraph(vocabulary)
+    }
+
+    let cardIndex = -1
+
+    const play = () => {
+        const playArray = [ vocabulary[0], vocabulary[1], vocabulary[2], vocabulary[3] ]
+        start(2000, vocabulary.sort(() => Math.random() - 0.5))
+    }
+
+    const start = (timeInterval, list) => {
+
+        console.log(cardIndex)
+        cardIndex = 0
+        console.log(cardIndex)
+        document.querySelector('.app').innerHTML = Paragraph([list[cardIndex]])
+        document.querySelector('.app').classList.add('single-word')
+
+        const timerInterval = setInterval(() => {
+            if(cardIndex === list.length - 1) {
+                clearInterval(timerInterval)
+                document.querySelector('.app').classList.remove('single-word')
+                document.querySelector('.app').innerHTML = 'Complete'
+            } else {
+                cardIndex++
+                console.log(cardIndex)
+                document.querySelector('.app').innerHTML = Paragraph([list[cardIndex]])
+            }
+        }, timeInterval)
+    }
+</script>
+<style>
+
+.single-word .word-container {
+    padding: 64px;
+    width: 100%;
+}
+.single-word .furigana {
+    font-size: 124px !important;
+    padding: 18px;
+}
+
+.single-word .japanese-word {
+    font-size: 200px !important;
+    margin: 32px;
+}
+
+.single-word .english-translation {
+    font-size: 64px !important;
+    padding: 18px;
+
+}
+</style>
+</head>
+<body onLoad="init()">
+    <select>
+        <option></option>
+    </select>
+    <button class="w-full bg-black text-white" onClick="play()">START</button>
+    <button class="w-full bg-black text-white" onClick="play()">STOP</button>
+    <div class="app w-full flex flex-wrap p-4">
+
+    </div>
+</body>
+</html>
