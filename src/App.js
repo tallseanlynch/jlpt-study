@@ -119,25 +119,25 @@ function App() {
     setUserData(userDataCopy)
   }
 
-  const tagVocabList = (vocabList, tag) => {
-    if(tag === '') {
-      return
-    }
-    let userDataCopy = {words: {}}
-    vocabList.forEach((vocab) => {
-      if(userDataCopy.words[vocab.id] === undefined){
-        userDataCopy.words[vocab.id] = {
-          events: [createAddedDate()],
-          tags: []
-        }
-      }
-      if(userDataCopy[vocab.id] && userDataCopy[vocab.id].tags) {
-        userDataCopy.words[vocab.id].tags.push(tag)
-      } else {
-        userDataCopy.words[vocab.id].tags = [tag]
-      }
-    })
-  }
+  // const tagVocabList = (vocabList, tag) => {
+  //   if(tag === '') {
+  //     return
+  //   }
+  //   let userDataCopy = {words: {}}
+  //   vocabList.forEach((vocab) => {
+  //     if(userDataCopy.words[vocab.id] === undefined){
+  //       userDataCopy.words[vocab.id] = {
+  //         events: [createAddedDate()],
+  //         tags: []
+  //       }
+  //     }
+  //     if(userDataCopy[vocab.id] && userDataCopy[vocab.id].tags) {
+  //       userDataCopy.words[vocab.id].tags.push(tag)
+  //     } else {
+  //       userDataCopy.words[vocab.id].tags = [tag]
+  //     }
+  //   })
+  // }
 
 
   const searchExact = (searchQueryArray) => {
@@ -722,7 +722,7 @@ function App() {
                       }
                     }
                   ><div>Study All</div></button>
-                  <input style={{width: '150px'}} id="tag-all-list-input" className="ml-1 text-sm border-2 rounded-lg w-full p-1 pl-2" placeholder={'Tag'} type="text" onChange={(e) => setUserInputTag(e.target.value)} />
+                  {/* <input style={{width: '150px'}} id="tag-all-list-input" className="ml-1 text-sm border-2 rounded-lg w-full p-1 pl-2" placeholder={'Tag'} type="text" onChange={(e) => setUserInputTag(e.target.value)} />
                   <button
                     className={`${inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
                     style={{transition: 'all 300ms'}}
@@ -732,7 +732,7 @@ function App() {
                         tagVocabList(vocabularyList ? activeVocabulary : results, userInputTag)
                       }
                     }
-                  ><div>Tag All</div></button>
+                  ><div>Tag All</div></button> */}
                   <button
                     className={`${isPlaying ? activeClass : inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
                     style={{transition: 'all 300ms'}}
