@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
-  openWindowWithString, 
-  commaSeparateList, 
+  // openWindowWithString, 
+  // commaSeparateList, 
   saveUserData, 
-  getJSON,
-  windowCountDown,
+  // getJSON,
+  // windowCountDown,
   createScore,
   createAddedDate,
+  search,
+  searchByIds,
+  searchExact
 } from './js/utils'
 import caret from './images/caret.png'
 import copy from './images/copy.png'
@@ -16,6 +19,8 @@ import { DisplayVocab } from './components/DisplayVocab'
 // 1. search for JLPT level of words and kanjis
 // need to make sure I have all 5, 4, 3 words
 // 2. only show first 25 words upon search to save memory
+
+
 
 function App() {
   const [ results, setResults ] = useState([])
@@ -38,8 +43,8 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [searchArray, setSearchArray] = useState([]);
   const [userInputTag, setUserInputTag] = useState('');
-  const [minScore, setMinScore] = useState(0)
-  const [maxScore, setMaxScore] = useState(0)
+  const [minScore, setMinScore] = useState(-10)
+  const [maxScore, setMaxScore] = useState(10)
   const [staticList, setStaticList] = useState([])
   const [playerInterval, setPlayerInterval] = useState(10)
   const [textMode, setTextMode] = useState(false)
@@ -64,15 +69,6 @@ function App() {
     setUserData(userDataCopy)
     setUserDataEntries([...userDataEntries, ...filteredDataEntries])
   }
-
-  // const testVocabId = (score, id) => {
-  //   let userDataCopy = { ...userData }
-  //   if(userData.words[id].events !== undefined){
-  //     userDataCopy.words[id].events.push(createScore(score))
-  //   } 
-  //   saveUserData(userDataCopy)
-  //   setUserData(userDataCopy)
-  // }
 
   const getAllAddedDates = useCallback(() => {
     const uniqueDates = []
@@ -101,10 +97,6 @@ function App() {
     return sortedDates
   }, [userData])
 
-  // const TextVocabWord = (word, id, score = -10) => {
-  //   return (<span onClick={testVocabId(score, id)}>{word}</span>)
-  // }
-
   const testVocab = (score) => {
     let userDataCopy = { ...userData }
     const activeList = isPlaying ? staticList : activeVocabulary
@@ -118,66 +110,6 @@ function App() {
     saveUserData(userDataCopy)
     setUserData(userDataCopy)
   }
-
-  // const tagVocabList = (vocabList, tag) => {
-  //   if(tag === '') {
-  //     return
-  //   }
-  //   let userDataCopy = {words: {}}
-  //   vocabList.forEach((vocab) => {
-  //     if(userDataCopy.words[vocab.id] === undefined){
-  //       userDataCopy.words[vocab.id] = {
-  //         events: [createAddedDate()],
-  //         tags: []
-  //       }
-  //     }
-  //     if(userDataCopy[vocab.id] && userDataCopy[vocab.id].tags) {
-  //       userDataCopy.words[vocab.id].tags.push(tag)
-  //     } else {
-  //       userDataCopy.words[vocab.id].tags = [tag]
-  //     }
-  //   })
-  // }
-
-
-  const searchExact = (searchQueryArray) => {
-    return fetch('http://localhost:9999/search', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ query: searchQueryArray, exact: true})
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .catch(error => {
-      console.error('There was a problem with the fetch operation: ', error);
-    })
-  }
-
-  const searchByIds = (searchIdArray) => {
-    return fetch('http://localhost:9999/search', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ ids: searchIdArray})
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .catch(error => {
-      console.error('There was a problem with the fetch operation: ', error);
-    })
-  }
-  
 
   const searchFilter = useCallback((e) => {
     async function handleSearchFilter() {
@@ -249,17 +181,29 @@ function App() {
     setMaxScore(10)
   }
 
-  // debug
-  // window.setCountdown = (s) => setCountdown(s)
+  const windowCountDown = (numberOfItems) => {
+    const maxValue = window.playerInterval * numberOfItems
+    window.setListPlayerIndex(0)
+    window.timerValue = maxValue
+    window.timerInterval = setInterval(() => {
+      // console.log(window.timerValue)
+      if(window.timerValue !== 0) {
+        document.querySelector('#play-controller-input').focus()
+        if(window.timerValue % window.playerInterval === 0 && window.timerValue < maxValue - 1) {
+          window.setListPlayerIndex(window.getListPlayerIndex() + 1)
+        }
+        window.timerValue = window.timerValue - 1
+      } else {
+        window.setIsPlaying(false)
+        clearInterval(window.timerInterval)
+      }
+    }, 1000)
+    // }
+  }
+  
   window.getListPlayerIndex = () => listPlayerIndex
   window.setListPlayerIndex = (i) => setListPlayerIndex(i)
   window.setIsPlaying = (i) => setIsPlaying(i)
-  window.getAllAddedDates = getAllAddedDates
-  window.getJSON = getJSON
-  window.saveUserData = saveUserData
-  window.commaSeparateList = commaSeparateList
-  window.openWindowWithString = openWindowWithString
-  window.createAddedDate = createAddedDate
 
   const activeClass = 'hover:bg-zinc-500 bg-zinc-700 cursor-pointer text-white'
   const inactiveClass = 'hover:bg-zinc-400 bg-zinc-300 cursor-pointer text-black'
@@ -453,27 +397,7 @@ function App() {
 
   useEffect(() => {
     searchFilter({target: { value: searchValue }})
-  }, [exactSearch, searchValue, exactKanjiKana, searchFilter])
-
-  const search = (searchQueryArray) => {
-    return fetch('http://localhost:9999/search', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ query: searchQueryArray})
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .catch(error => {
-      console.error('There was a problem with the fetch operation: ', error);
-    })
-  }
-  
+  }, [exactSearch, searchValue, exactKanjiKana, searchFilter])  
 
   return (
     <div className="flex flex-col h-full items-center justify-start">
@@ -712,7 +636,8 @@ function App() {
                   {vocabularyList ? `Vocabulary (${isPlaying ? `${listPlayerIndex+1}/` : ''}${staticList.length}) ${((staticList.length * playerInterval)/60).toFixed(0)}:${((staticList.length * playerInterval)%60).toFixed(0)}` : `Search Results (${results.length})`}
                 </div>
                 <div className="view-toggle flex" style={{transition: 'all 300ms'}}>
-                <button
+                {vocabularyList === false && (
+                  <button
                     className={`flex-none ${inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
                     style={{transition: 'all 300ms'}}
                     onClick={
@@ -722,52 +647,48 @@ function App() {
                       }
                     }
                   ><div>Study All</div></button>
-                  {/* <input style={{width: '150px'}} id="tag-all-list-input" className="ml-1 text-sm border-2 rounded-lg w-full p-1 pl-2" placeholder={'Tag'} type="text" onChange={(e) => setUserInputTag(e.target.value)} />
-                  <button
-                    className={`${inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
-                    style={{transition: 'all 300ms'}}
-                    onClick={
-                      () => {
-                        // console.log(userInputTag,userInputTag.length > 0)
-                        tagVocabList(vocabularyList ? activeVocabulary : results, userInputTag)
-                      }
-                    }
-                  ><div>Tag All</div></button> */}
-                  <button
-                    className={`${isPlaying ? activeClass : inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
-                    style={{transition: 'all 300ms'}}
-                    onClick={() => {
-                        if(isPlaying) {
-                          setIsPlaying(false)
-                          window.clearInterval(window.timerInterval)
-                        } else {
-                          setIsPlaying(true)
+                )}
+                  {
+                    vocabularyList === true && (
+                    <div>
+                      <button
+                        className={`${isPlaying ? activeClass : inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
+                        style={{transition: 'all 300ms'}}
+                        onClick={() => {
+                            if(isPlaying) {
+                              setIsPlaying(false)
+                              window.clearInterval(window.timerInterval)
+                            } else {
+                              setIsPlaying(true)
+                            }
+                            document.querySelector('#play-controller-input').focus()
+                          }
                         }
-                        document.querySelector('#play-controller-input').focus()
-                      }
-                    }
-                  >{`${isPlaying ? 'Stop' : 'Play'}`}</button>
+                      >{`${isPlaying ? 'Stop' : 'Play'}`}</button>
 
-                  <input style={{left: '0px', top: '0px'}} className="opacity-0 fixed bg-transparent" id="play-controller-input" placeholder={''} type="text" onKeyDown={
-                    (e) => {
-                      if(e.key === 'ArrowUp') {
-                        testVocab((window.timerValue % playerInterval) === 0 ? 10 : (window.timerValue % playerInterval) * (10 / playerInterval))
-                      }
-                      if(e.key === 'ArrowDown') {
-                        testVocab((window.timerValue % playerInterval) === 0 ? -10 : (window.timerValue % playerInterval) * (10 / playerInterval) * -1)
-                      }
-                    }
-                  } />
+                      <input style={{left: '0px', top: '0px'}} className="opacity-0 fixed bg-transparent" id="play-controller-input" placeholder={''} type="text" onKeyDown={
+                        (e) => {
+                          if(e.key === 'ArrowUp') {
+                            testVocab((window.timerValue % playerInterval) === 0 ? 10 : (window.timerValue % playerInterval) * (10 / playerInterval))
+                          }
+                          if(e.key === 'ArrowDown') {
+                            testVocab((window.timerValue % playerInterval) === 0 ? -10 : (window.timerValue % playerInterval) * (10 / playerInterval) * -1)
+                          }
+                        }
+                      } />
 
-                  <input style={{width: '75px'}} id="player-interval" className="ml-1 text-sm border-2 rounded-lg w-full p-1 pl-2" value={playerInterval} placeholder='Seconds' type="text" onChange={(e) => setPlayerInterval(e.target.value)} />
-                  <button
-                    className={`ml-1 ${resultsInteractionMode === 'flashcard' ? activeClass : inactiveClass} text-sm px-4 py-2 rounded-lg inline-block`}
-                    style={{transition: 'all 300ms'}}
-                    onClick={() => {
-                      resultsInteractionMode === 'flashcard' ? setResultsInteractionMode('') : setResultsInteractionMode('flashcard')
-                      }
-                    }
-                  >Flashcard</button>
+                      <input style={{width: '75px'}} id="player-interval" className="ml-1 text-sm border-2 rounded-lg w-full p-1 pl-2" value={playerInterval} placeholder='Seconds' type="text" onChange={(e) => setPlayerInterval(e.target.value)} />
+                      <button
+                        className={`ml-1 ${resultsInteractionMode === 'flashcard' ? activeClass : inactiveClass} text-sm px-4 py-2 rounded-lg inline-block`}
+                        style={{transition: 'all 300ms'}}
+                        onClick={() => {
+                          resultsInteractionMode === 'flashcard' ? setResultsInteractionMode('') : setResultsInteractionMode('flashcard')
+                          }
+                        }
+                      >Flashcard</button>
+                    </div>
+                    )
+                  }
                   <button
                     className={`${resultsViewMode === 'notecard' ? activeClass : inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
                     style={{transition: 'all 300ms'}}

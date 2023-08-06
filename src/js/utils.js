@@ -1,3 +1,60 @@
+export const search = (searchQueryArray) => {
+  return fetch('http://localhost:9999/search', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ query: searchQueryArray})
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation: ', error);
+  })
+}
+
+export const searchExact = (searchQueryArray) => {
+  return fetch('http://localhost:9999/search', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ query: searchQueryArray, exact: true})
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation: ', error);
+  })
+}
+
+export const searchByIds = (searchIdArray) => {
+  return fetch('http://localhost:9999/search', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ ids: searchIdArray})
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation: ', error);
+  })
+}
+
 export function removeCharacters(inputVal, characterArray) {
   for (let i = 0; i < characterArray.length; i++) {
     const regex = new RegExp(characterArray[i], "g");
@@ -553,3 +610,49 @@ export const windowCountDown = (numberOfItems) => {
     "pn": "pronoun",
     "gikun": "gikun (meaning as reading) or jukujikun (special kanji reading)"
   }
+
+// const tagVocabList = (vocabList, tag) => {
+//   if(tag === '') {
+//     return
+//   }
+//   let userDataCopy = {words: {}}
+//   vocabList.forEach((vocab) => {
+//     if(userDataCopy.words[vocab.id] === undefined){
+//       userDataCopy.words[vocab.id] = {
+//         events: [createAddedDate()],
+//         tags: []
+//       }
+//     }
+//     if(userDataCopy[vocab.id] && userDataCopy[vocab.id].tags) {
+//       userDataCopy.words[vocab.id].tags.push(tag)
+//     } else {
+//       userDataCopy.words[vocab.id].tags = [tag]
+//     }
+//   })
+// }
+
+// const TextVocabWord = (word, id, score = -10) => {
+//   return (<span onClick={testVocabId(score, id)}>{word}</span>)
+// }
+
+// const testVocabId = (score, id) => {
+//   let userDataCopy = { ...userData }
+//   if(userData.words[id].events !== undefined){
+//     userDataCopy.words[id].events.push(createScore(score))
+//   } 
+//   saveUserData(userDataCopy)
+//   setUserData(userDataCopy)
+// }
+
+// {/* <input style={{width: '150px'}} id="tag-all-list-input" className="ml-1 text-sm border-2 rounded-lg w-full p-1 pl-2" placeholder={'Tag'} type="text" onChange={(e) => setUserInputTag(e.target.value)} />
+// <button
+//   className={`${inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
+//   style={{transition: 'all 300ms'}}
+//   onClick={
+//     () => {
+//       // console.log(userInputTag,userInputTag.length > 0)
+//       tagVocabList(vocabularyList ? activeVocabulary : results, userInputTag)
+//     }
+//   }
+// ><div>Tag All</div></button> */}
+
