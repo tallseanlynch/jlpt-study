@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
+import {
   // openWindowWithString, 
   // commaSeparateList, 
-  saveUserData, 
+  saveUserData,
   // getJSON,
   // windowCountDown,
   createScore,
@@ -23,7 +23,7 @@ import { DisplayVocab } from './components/DisplayVocab'
 
 
 function App() {
-  const [ results, setResults ] = useState([])
+  const [results, setResults] = useState([])
   const [userData, setUserData] = useState(null)
   const [userDataEntries, setUserDataEntries] = useState(null)
   const [exactSearch, setExactSearch] = useState(true)
@@ -37,7 +37,7 @@ function App() {
   const [resultsViewMode, setResultsViewMode] = useState('')
   const [userLists, setUserLists] = useState([]);
   const [listSelectorOpen, setListSelectorOpen] = useState(false);
-  const [vocabularyList, setVocabularyList] = useState(true);
+  // const [vocabularyList, setVocabularyList] = useState(true);
   const [resultsInteractionMode, setResultsInteractionMode] = useState('');
   const [listPlayerIndex, setListPlayerIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -47,23 +47,23 @@ function App() {
   const [maxScore, setMaxScore] = useState(10)
   const [staticList, setStaticList] = useState([])
   const [playerInterval, setPlayerInterval] = useState(10)
-  const [textMode, setTextMode] = useState(false)
+  const [appMode, setAppMode] = useState('vocabulary')
 
   const studyVocabAddUserDataEntry = (entry) => {
     setUserDataEntries([...userDataEntries, entry])
   }
-  
+
   const studyVocabList = (vocabList) => {
     let userDataCopy = { ...userData }
     let filteredDataEntries = []
     vocabList.forEach((vocab) => {
-      if(userDataCopy.words[vocab.id] === undefined){
+      if (userDataCopy.words[vocab.id] === undefined) {
         filteredDataEntries.push(vocab)
         userDataCopy.words[vocab.id] = {
           events: [createAddedDate()],
           tags: []
         }
-      } 
+      }
     })
     saveUserData(userDataCopy)
     setUserData(userDataCopy)
@@ -77,7 +77,7 @@ function App() {
         return e.type === 'addedDate'
       })[0].t)
       let addedDateFormatted = `${addedDate.getMonth() + 1}/${addedDate.getDate()}`
-      if(uniqueDates.indexOf(addedDateFormatted) === -1) {
+      if (uniqueDates.indexOf(addedDateFormatted) === -1) {
         uniqueDates.push(addedDateFormatted)
       }
     })
@@ -86,7 +86,7 @@ function App() {
       // This works fine as long as there are no cross-year comparisons needed (i.e. Dec vs Jan)
       let dateA = new Date(`${a}/2023`);
       let dateB = new Date(`${b}/2023`);
-  
+
       // If dateA is bigger than dateB, we sort it to an earlier index
       if (dateA > dateB) return -1;
       // If dateA is smaller than dateB, we sort it to a later index
@@ -101,33 +101,33 @@ function App() {
     let userDataCopy = { ...userData }
     const activeList = isPlaying ? staticList : activeVocabulary
     let flashCardWord = activeList.filter((f, fi) => {
-      return isPlaying ? (fi === listPlayerIndex) : f 
+      return isPlaying ? (fi === listPlayerIndex) : f
     })[0]
     let currentFlashCardId = flashCardWord.id
-    if(userData.words[currentFlashCardId].events !== undefined){
+    if (userData.words[currentFlashCardId].events !== undefined) {
       userDataCopy.words[currentFlashCardId].events.push(createScore(score))
-    } 
+    }
     saveUserData(userDataCopy)
     setUserData(userDataCopy)
   }
 
   const searchFilter = useCallback((e) => {
     async function handleSearchFilter() {
-      if(String(e.target.value).length === 0 && vocabularyList === false){
+      if (String(e.target.value).length === 0) {
         return
       }
-  
+
       const splitCommaString = String(e.target.value).split(', ').map(ss => ss.replace(',', '')).map(ss => ss.replace(' ', ''))
       const isSplitCommaString = splitCommaString.length > 1
-  
+
       const searchArray = isSplitCommaString ? splitCommaString : [e.target.value]
       setSearchArray(searchArray)
-  
+
       let filterArray = exactSearch ? await searchExact(searchArray) : await search(searchArray)
-      if(filterArray.length > 0 && exactKanjiKana) {
+      if (filterArray.length > 0 && exactKanjiKana) {
         filterArray = filterArray.filter(f => {
           let hasKanji = f.kanji.length > 0
-          let searchStringValues = hasKanji ? 
+          let searchStringValues = hasKanji ?
             [...f.kanji.map(k => k.text)] :
             [...f.kana.map(k => k.text)]
           return searchArray.filter(sa => {
@@ -135,26 +135,26 @@ function App() {
           }).length > 0
         })
       }
-  
-      if(filterArray.length > 0) {
-          setResults(filterArray.sort((a, b) => {
-            let aCommons = [...a.kana.filter(k => k.common === true), ...a.kanji.map(k => k.common === true)]
-            let bCommons = [...b.kana.filter(k => k.common === true), ...b.kanji.map(k => k.common === true)]
-            return bCommons.length - aCommons.length
-          }).sort((a,b) => {
-            let isUserDataVocabA = userData.words[a.id] !== undefined ? 1 : 0
-            let isUserDataVocabB = userData.words[b.id] !== undefined ? 1 : 0
-            return isUserDataVocabB - isUserDataVocabA
-          })
+
+      if (filterArray.length > 0) {
+        setResults(filterArray.sort((a, b) => {
+          let aCommons = [...a.kana.filter(k => k.common === true), ...a.kanji.map(k => k.common === true)]
+          let bCommons = [...b.kana.filter(k => k.common === true), ...b.kanji.map(k => k.common === true)]
+          return bCommons.length - aCommons.length
+        }).sort((a, b) => {
+          let isUserDataVocabA = userData.words[a.id] !== undefined ? 1 : 0
+          let isUserDataVocabB = userData.words[b.id] !== undefined ? 1 : 0
+          return isUserDataVocabB - isUserDataVocabA
+        })
           .filter((f, fi) => {
-            return isPlaying ? (fi === listPlayerIndex) : f 
+            return isPlaying ? (fi === listPlayerIndex) : f
           }))
       } else {
         setResults([])
-      }            
+      }
     }
     handleSearchFilter()
-  }, [exactKanjiKana, exactSearch, isPlaying, listPlayerIndex, userData, vocabularyList])
+  }, [exactKanjiKana, exactSearch, isPlaying, listPlayerIndex, userData])
 
   const onInputChange = (e) => {
     setSearchValue(String(e.target.value))
@@ -187,9 +187,9 @@ function App() {
     window.timerValue = maxValue
     window.timerInterval = setInterval(() => {
       // console.log(window.timerValue)
-      if(window.timerValue !== 0) {
+      if (window.timerValue !== 0) {
         document.querySelector('#play-controller-input').focus()
-        if(window.timerValue % window.playerInterval === 0 && window.timerValue < maxValue - 1) {
+        if (window.timerValue % window.playerInterval === 0 && window.timerValue < maxValue - 1) {
           window.setListPlayerIndex(window.getListPlayerIndex() + 1)
         }
         window.timerValue = window.timerValue - 1
@@ -200,7 +200,7 @@ function App() {
     }, 1000)
     // }
   }
-  
+
   window.getListPlayerIndex = () => listPlayerIndex
   window.setListPlayerIndex = (i) => setListPlayerIndex(i)
   window.setIsPlaying = (i) => setIsPlaying(i)
@@ -214,22 +214,22 @@ function App() {
 
   useEffect(() => {
     window.flashCardMode = isPlaying
-    if(isPlaying===true) {
+    if (isPlaying === true) {
       windowCountDown(staticList.length)
     }
   }, [isPlaying, staticList.length])
 
   useEffect(() => {
     const fetchSetUserDataEntries = async () => {
-      if(userDataEntries === null) {
+      if (userDataEntries === null) {
         const searchByIdsResults = await searchByIds(Object.keys(userData.words));
         setUserDataEntries(searchByIdsResults)
-      }  
+      }
     }
 
-    if(userData !== null && activeVocabulary !== null) {
+    if (userData !== null && activeVocabulary !== null) {
       setUserLists(getAllAddedDates())
-      if(isPlaying!==true){
+      if (isPlaying !== true) {
         setStaticList([...activeVocabulary])
       }
       fetchSetUserDataEntries()
@@ -249,130 +249,130 @@ function App() {
   // ])
 
   useEffect(() => {
-    if(userData === null) {
-      fetch('http://localhost:8080/db.json', {cache: "no-store"})
-      .then((res) => res.json())
-      .then((jsonResponseData) => setUserData(jsonResponseData))
+    if (userData === null) {
+      fetch('http://localhost:8080/db.json', { cache: "no-store" })
+        .then((res) => res.json())
+        .then((jsonResponseData) => setUserData(jsonResponseData))
     }
   })
 
 
   // handles the users history and vocab on the left side of the application
-  useEffect(()=> {
+  useEffect(() => {
     async function handleUserData() {
-      if(userData && userDataEntries !== null) {
+      if (userData && userDataEntries !== null) {
         const result = userDataEntries;
 
         let filteredVocabList = result.filter((fi) => {
           return userData.words[fi.id].active === undefined || userData.words[fi.id].active === true;
         })
-        .filter(avf => {
-          let kanjis = avf.kanji.length > 0 ? avf.kanji.map(kj => kj.text) : [];
-          let kanas = avf.kana.length > 0 ? avf.kana.map(kj => kj.text) : [];
-  
-          if(listSearchValue !== '') {
-            if(listExactSearch) {
-              kanjis = kanjis.filter(kj => kj === listSearchValue)
-              kanas = kanas.filter(kj => kj === listSearchValue)
-            } else {
-              kanjis = kanjis.filter(kj => kj.indexOf(listSearchValue) > -1)
-              kanas = kanas.filter(kj => kj.indexOf(listSearchValue) > -1)
+          .filter(avf => {
+            let kanjis = avf.kanji.length > 0 ? avf.kanji.map(kj => kj.text) : [];
+            let kanas = avf.kana.length > 0 ? avf.kana.map(kj => kj.text) : [];
+
+            if (listSearchValue !== '') {
+              if (listExactSearch) {
+                kanjis = kanjis.filter(kj => kj === listSearchValue)
+                kanas = kanas.filter(kj => kj === listSearchValue)
+              } else {
+                kanjis = kanjis.filter(kj => kj.indexOf(listSearchValue) > -1)
+                kanas = kanas.filter(kj => kj.indexOf(listSearchValue) > -1)
+              }
             }
-          }
-  
-          return kanjis.length + kanas.length > 0 ? true : false
-        })
-        .map((ud, udi) => {
+
+            return kanjis.length + kanas.length > 0 ? true : false
+          })
+          .map((ud, udi) => {
             let addedDate = new Date(userData.words[ud.id].events.filter(e => {
               return e.type === 'addedDate'
             })[0].t)
             let addedDateFormatted = `${addedDate.getMonth() + 1}/${addedDate.getDate()}`
-            return { ...ud, tags: [addedDateFormatted] }  
-        })
-        .sort((a, b) => {
+            return { ...ud, tags: [addedDateFormatted] }
+          })
+          .sort((a, b) => {
             let aTimestamp = userData.words[a.id].events.filter(e => {
               return e.type === 'addedDate'
             })[0].t
             let bTimestamp = userData.words[b.id].events.filter(e => {
               return e.type === 'addedDate'
             })[0].t
-            return  bTimestamp - aTimestamp  
-        })
-        .filter(f => {
-          if(tagListSearchValue !== '') {
-            let foundInSearch = false
-            let splitTags = tagListSearchValue.split(', ').map(t => t.replace(',', '').replace(' ', ''))
-            splitTags.forEach((st) => {
-              if(tagListExactSearch) {
-                if(f.tags.filter(t => t === st).length > 0) {
-                  foundInSearch = true
-                }
-              } else {
-                if(f.tags.filter(t => t.indexOf(st) > -1).length > 0) {
-                  foundInSearch = true
-                }
-              }  
-            })
-            return foundInSearch
-          } else {
-            return true
-          }
-        })
-        .map(f => {
-          let scoreArray = userData.words[f.id].events
-          .filter(e => {
-            return e.type === 'score'
+            return bTimestamp - aTimestamp
           })
-          .map(m => m.s)
-          let totalScore = 0
-          if(scoreArray.length > 0){
-            totalScore = scoreArray.reduce((accumulator, currentValue) => {
-              return accumulator + currentValue
-            })
-          }
-          const arrayLength = scoreArray.length ? scoreArray.length : 1
-          const averageScore = totalScore / arrayLength
-          return { ...f, totalScore, averageScore }
-        })
-        .filter(f => {
-          let minScoreGuard = minScore !== null ? minScore : -10
-          let maxScoreGuard = maxScore !== null ? maxScore : 10
-          return f.averageScore >= minScoreGuard && f.averageScore <= maxScoreGuard ? true : false
-        })
-  
-        setActiveVocabulary(filteredVocabList.sort((a, b) => {
-          let aScore = userData.words[a.id].events
-          .filter((f) => {
-            if(f.type === 'score') {
-              return true
+          .filter(f => {
+            if (tagListSearchValue !== '') {
+              let foundInSearch = false
+              let splitTags = tagListSearchValue.split(', ').map(t => t.replace(',', '').replace(' ', ''))
+              splitTags.forEach((st) => {
+                if (tagListExactSearch) {
+                  if (f.tags.filter(t => t === st).length > 0) {
+                    foundInSearch = true
+                  }
+                } else {
+                  if (f.tags.filter(t => t.indexOf(st) > -1).length > 0) {
+                    foundInSearch = true
+                  }
+                }
+              })
+              return foundInSearch
             } else {
-              return false
+              return true
             }
           })
+          .map(f => {
+            let scoreArray = userData.words[f.id].events
+              .filter(e => {
+                return e.type === 'score'
+              })
+              .map(m => m.s)
+            let totalScore = 0
+            if (scoreArray.length > 0) {
+              totalScore = scoreArray.reduce((accumulator, currentValue) => {
+                return accumulator + currentValue
+              })
+            }
+            const arrayLength = scoreArray.length ? scoreArray.length : 1
+            const averageScore = totalScore / arrayLength
+            return { ...f, totalScore, averageScore }
+          })
+          .filter(f => {
+            let minScoreGuard = minScore !== null ? minScore : -10
+            let maxScoreGuard = maxScore !== null ? maxScore : 10
+            return f.averageScore >= minScoreGuard && f.averageScore <= maxScoreGuard ? true : false
+          })
 
-          if(aScore.length > 0) {
-            aScore = aScore.map(s => s.s)
-            .reduce((accumulator, currentValue) => {
-              return accumulator + currentValue
+        setActiveVocabulary(filteredVocabList.sort((a, b) => {
+          let aScore = userData.words[a.id].events
+            .filter((f) => {
+              if (f.type === 'score') {
+                return true
+              } else {
+                return false
+              }
             })
+
+          if (aScore.length > 0) {
+            aScore = aScore.map(s => s.s)
+              .reduce((accumulator, currentValue) => {
+                return accumulator + currentValue
+              })
           } else {
             aScore = -100
           }
 
           let bScore = userData.words[b.id].events
-          .filter((f) => {
-            if(f.type === 'score') {
-              return true
-            } else {
-              return false
-            }
-          })
-
-          if(bScore.length > 0) {
-            bScore = bScore.map(s => s.s)
-            .reduce((accumulator, currentValue) => {
-              return accumulator + currentValue
+            .filter((f) => {
+              if (f.type === 'score') {
+                return true
+              } else {
+                return false
+              }
             })
+
+          if (bScore.length > 0) {
+            bScore = bScore.map(s => s.s)
+              .reduce((accumulator, currentValue) => {
+                return accumulator + currentValue
+              })
           } else {
             bScore = -100
           }
@@ -396,8 +396,8 @@ function App() {
   ])
 
   useEffect(() => {
-    searchFilter({target: { value: searchValue }})
-  }, [exactSearch, searchValue, exactKanjiKana, searchFilter])  
+    searchFilter({ target: { value: searchValue } })
+  }, [exactSearch, searchValue, exactKanjiKana, searchFilter])
 
   return (
     <div className="flex flex-col h-full items-center justify-start">
@@ -407,83 +407,82 @@ function App() {
           <span className="w-full flex justify-between">
             <input id="search-input" className="border-2 rounded-lg w-full p-2 pl-4" placeholder={'Search'} type="text" onChange={onInputChange} />
             <button
-              style={{transition: 'all 300ms', width: '150px'}}
+              style={{ transition: 'all 300ms', width: '150px' }}
               className={`${exactSearch ? activeClass : inactiveClass} text-sm px-4 rounded-lg ml-2 inline-block`}
               onClick={() => {
-                  setExactSearch(!exactSearch)
-                }
+                setExactSearch(!exactSearch)
+              }
               }
             >Exact Search</button>
             <button
-              style={{transition: 'all 300ms', width: '150px'}}
+              style={{ transition: 'all 300ms', width: '150px' }}
               className={`${exactKanjiKana ? activeClass : inactiveClass} text-sm px-4 rounded-lg ml-2 inline-block`}
               onClick={() => {
-                  setExactKanjiKana(!exactKanjiKana)
-                }
+                setExactKanjiKana(!exactKanjiKana)
               }
-            >Single Word</button>            
+              }
+            >Single Word</button>
           </span>
-        </div>          
-        
+        </div>
         <div className="flex w-full">
-          <div className={`${isPlaying ? 'w-0 overflow-hidden opacity-0' : 'w-1/4 mr-4 p-4 border rounded-lg drop-shadow-lg'} flex flex-col bg-white`} style={{transition: 'width 300ms, opacity 300ms'}}>
-          <div className="flex justify-between mb-4">
-            <div className="text-xl italic text-zinc-700">Vocabulary</div>
-            <div className="flex">
-            <button
-                style={{transition: 'all 300ms'}}
-                className={`${inactiveClass} mr-1 text-sm px-4 rounded-lg inline-block`}
-                onClick={(e) => {
-                    const listOnly = () =>{
+          <div className={`${isPlaying ? 'w-0 overflow-hidden opacity-0' : 'w-1/4 mr-4 p-4 border rounded-lg drop-shadow-lg'} flex flex-col bg-white`} style={{ transition: 'width 300ms, opacity 300ms' }}>
+            <div className="flex justify-between mb-4">
+              <div className="text-xl italic text-zinc-700">Vocabulary</div>
+              <div className="flex">
+                <button
+                  style={{ transition: 'all 300ms' }}
+                  className={`${inactiveClass} mr-1 text-sm px-4 rounded-lg inline-block`}
+                  onClick={(e) => {
+                    const listOnly = () => {
                       const vocabCSV = userData && activeVocabulary.map(ud => {
                         let kanjis = ud.kanji.length > 0 ? ud.kanji.map(kj => kj.text) : [];
                         let kanas = ud.kana.length > 0 ? ud.kana.map(kj => kj.text) : [];
-  
-                        return kanjis.length ? 
-                        kanjis.map(m => m) : 
-                        kanas.map(m => m)  
+
+                        return kanjis.length ?
+                          kanjis.map(m => m) :
+                          kanas.map(m => m)
                       })
-  
+
                       const reducedVocabCSV = vocabCSV.reduce((acc, val) => {
                         return acc.concat(val)
                       })
-                      navigator.clipboard.writeText(reducedVocabCSV.join(','))  
+                      navigator.clipboard.writeText(reducedVocabCSV.join(','))
                     }
 
-                    const markdownList = () =>{
+                    const markdownList = () => {
                       const vocabCSV = userData && activeVocabulary.map(ud => {
                         let kanjis = ud.kanji.length > 0 ? ud.kanji.map(kj => kj.text) : [];
                         let kanas = ud.kana.length > 0 ? ud.kana.map(kj => kj.text) : [];
-  
-                        return kanjis.length ? 
-                        kanjis.map(m => `${ud.id}:${m}`) : 
-                        kanas.map(m => `${ud.id}:${m}`)  
+
+                        return kanjis.length ?
+                          kanjis.map(m => `${ud.id}:${m}`) :
+                          kanas.map(m => `${ud.id}:${m}`)
                       })
-  
+
                       const reducedVocabCSV = vocabCSV.reduce((acc, val) => {
                         return acc.concat(val)
                       })
                       console.log(reducedVocabCSV)
-                      navigator.clipboard.writeText(reducedVocabCSV.join(','))  
+                      navigator.clipboard.writeText(reducedVocabCSV.join(','))
                     }
 
                     e.shiftKey ? markdownList() : listOnly()
 
                   }
-                }
-              >
-                <img alt="copy selection" style={{minHeight: '12px', minWidth: '12px', maxHeight: '12px', maxWidth: '12px'}} src={copy}></img>
-              </button>
-              <button
-                style={{transition: 'all 300ms'}}
-                className={`${vocabularyList ? activeClass : inactiveClass} text-sm px-4 rounded-lg inline-block`}
-                onClick={() => {
+                  }
+                >
+                  <img alt="copy selection" style={{ minHeight: '12px', minWidth: '12px', maxHeight: '12px', maxWidth: '12px' }} src={copy}></img>
+                </button>
+                {/* <button
+                  style={{ transition: 'all 300ms' }}
+                  className={`${vocabularyList ? activeClass : inactiveClass} text-sm px-4 rounded-lg inline-block`}
+                  onClick={() => {
                     setVocabularyList(!vocabularyList)
                   }
-                }
-              >{vocabularyList ? 'X' : '>'}</button>
+                  }
+                >{vocabularyList ? 'X' : '>'}</button> */}
 
-            </div>
+              </div>
             </div>
             <div className="flex pb-4">
               <input
@@ -494,64 +493,64 @@ function App() {
                 onChange={onListInputChange}
               />
               <button
-                style={{transition: 'all 300ms'}}
+                style={{ transition: 'all 300ms' }}
                 className={`${listExactSearch ? activeClass : inactiveClass} text-sm px-4 rounded-lg ml-2 inline-block`}
                 onClick={() => {
-                    setListExactSearch(!listExactSearch)
-                  }
+                  setListExactSearch(!listExactSearch)
+                }
                 }
               >Exact</button>
             </div>
             <div className="flex pb-4">
-                <input
-                  id="list-search-input"
-                  className="border-2 rounded-lg w-full p-2 pl-4 mr-1"
-                  placeholder={'Min Score'}
-                  type="text"
-                  onChange={onMinListInputChange}
-                  value={minScore}
-                />
-                <input
-                  id="list-search-input"
-                  className="border-2 rounded-lg w-full p-2 pl-4 ml-1"
-                  placeholder={'Max Score'}
-                  type="text"
-                  onChange={onMaxListInputChange}
-                  value={maxScore}
-                />
-                <button
-                  onClick={clearMinMaxScore}
-                  style={{transition: 'all 300ms'}}
-                  className={`${inactiveClass} text-sm px-4 rounded-lg ml-2 inline-block`}  
-                >X</button>
-              </div>
+              <input
+                id="list-search-input"
+                className="border-2 rounded-lg w-full p-2 pl-4 mr-1"
+                placeholder={'Min Score'}
+                type="text"
+                onChange={onMinListInputChange}
+                value={minScore}
+              />
+              <input
+                id="list-search-input"
+                className="border-2 rounded-lg w-full p-2 pl-4 ml-1"
+                placeholder={'Max Score'}
+                type="text"
+                onChange={onMaxListInputChange}
+                value={maxScore}
+              />
+              <button
+                onClick={clearMinMaxScore}
+                style={{ transition: 'all 300ms' }}
+                className={`${inactiveClass} text-sm px-4 rounded-lg ml-2 inline-block`}
+              >X</button>
+            </div>
 
             <div className="flex pb-4">
               <div className="relative w-full">
                 <img
                   alt="Selet List"
                   className="absolute"
-                  style={{transition: 'all 200ms', right: '16px', top: '16px', transform: listSelectorOpen ? '' : 'rotate(180deg'}}
+                  style={{ transition: 'all 200ms', right: '16px', top: '16px', transform: listSelectorOpen ? '' : 'rotate(180deg' }}
                   src={caret}
                   onClick={() => {
                     setListSelectorOpen(!listSelectorOpen)
                     document.querySelector('.list-selector-option-0').focus()
                   }}
                 />
-                <div className={`${listSelectorOpen ? '' : 'pointer-events-none opacity-0'} absolute bg-white border-2 rounded-lg w-full p-2`} style={{transition: 'all 200ms', top: '48px', zIndex: '10'}}>
-                  {userLists.sort(function(a, b) {
-                      // Split the date by '/' and create a new Date object
-                      let aDate = new Date('2023/' + a); // using 2023 as a dummy year
-                      let bDate = new Date('2023/' + b); // using 2023 as a dummy year
+                <div className={`${listSelectorOpen ? '' : 'pointer-events-none opacity-0'} absolute bg-white border-2 rounded-lg w-full p-2`} style={{ transition: 'all 200ms', top: '48px', zIndex: '10' }}>
+                  {userLists.sort(function (a, b) {
+                    // Split the date by '/' and create a new Date object
+                    let aDate = new Date('2023/' + a); // using 2023 as a dummy year
+                    let bDate = new Date('2023/' + b); // using 2023 as a dummy year
 
-                      // Now, compare the two dates
-                      if (aDate > bDate) {
-                          return -1;
-                      } else if (aDate < bDate) {
-                          return 1;
-                      } else {
-                          return 0;
-                      }
+                    // Now, compare the two dates
+                    if (aDate > bDate) {
+                      return -1;
+                    } else if (aDate < bDate) {
+                      return 1;
+                    } else {
+                      return 0;
+                    }
                   }).map((list, index) => {
                     return (
                       <div className={`p-2 list-selector-option-${index} hover:text-zinc-700 hover:bg-zinc-100 cursor-pointer rounded-lg`} key={index} onClick={() => {
@@ -560,7 +559,7 @@ function App() {
                         setTagListSearchValue(list)
                       }}>
                         {list}
-                      </div>  
+                      </div>
                     )
                   })}
                 </div>
@@ -573,89 +572,120 @@ function App() {
                 />
               </div>
               <button
-                style={{transition: 'all 300ms'}}
+                style={{ transition: 'all 300ms' }}
                 className={`${tagListExactSearch ? activeClass : inactiveClass} text-sm px-4 rounded-lg ml-2 inline-block`}
                 onClick={() => {
-                    setTagListExactSearch(!tagListExactSearch)
-                  }
+                  setTagListExactSearch(!tagListExactSearch)
+                }
                 }
               >Exact</button>
             </div>
             {
               userData && activeVocabulary
-                .slice(0,100)
+                .slice(0, 100)
                 .map(ud => {
-                let kanjis = ud.kanji.length > 0 ? ud.kanji.map(kj => kj.text) : [];
-                let kanas = ud.kana.length > 0 ? ud.kana.map(kj => kj.text) : [];
+                  let kanjis = ud.kanji.length > 0 ? ud.kanji.map(kj => kj.text) : [];
+                  let kanas = ud.kana.length > 0 ? ud.kana.map(kj => kj.text) : [];
 
-                return (
-                  <div key={`${ud.id}`} className={`rounded-lg py-2 px-2 text-zinc-500 hover:text-zinc-700 hover:bg-zinc-100 cursor-pointer`} >
-                    <div className="flex">
-                      <div className="flex flex-col">
-                        {
-                          ud.tags.map((t, ti) => {
-                            return (<span key={`${ud.id}-tag-${ti}`} className="text-sm bg-zinc-200 text-black rounded-lg px-2 py-1 mr-2 cursor-pointer" onClick={() => {
-                              setTagListSearchValue(t);
-                              document.querySelector('#list-search-tag-input').value = t
-                            }}>{
-                              t
-                              }</span>)
-                          })
-                        }
-                      </div>
-                      <div className="flex flex-col">
-                        {
-                          kanjis.length ? kanjis.map((m, mi) => { return (
-                            <span key={`${ud.id}-kanjis-${mi}`} className="hover:underline" onClick={() => {
-                              document.querySelector('#search-input').value = m
-                              setSearchValue(m)}}
-                            >
-                              {m}
-                            </span>
-                          )}) : 
-                          kanas.map((m, mi) => { return (
-                            <span key={`${ud.id}-kanas-${mi}`} className="hover:underline" onClick={() => {
-                              document.querySelector('#search-input').value = m
-                              setSearchValue(m)}}
-                            >
-                              {m}
-                            </span>
-                          )})
-                        }
+                  return (
+                    <div key={`${ud.id}`} className={`rounded-lg py-2 px-2 text-zinc-500 hover:text-zinc-700 hover:bg-zinc-100 cursor-pointer`} >
+                      <div className="flex">
+                        <div className="flex flex-col">
+                          {
+                            ud.tags.map((t, ti) => {
+                              return (<span key={`${ud.id}-tag-${ti}`} className="text-sm bg-zinc-200 text-black rounded-lg px-2 py-1 mr-2 cursor-pointer" onClick={() => {
+                                setTagListSearchValue(t);
+                                document.querySelector('#list-search-tag-input').value = t
+                              }}>{
+                                  t
+                                }</span>)
+                            })
+                          }
+                        </div>
+                        <div className="flex flex-col">
+                          {
+                            kanjis.length ? kanjis.map((m, mi) => {
+                              return (
+                                <span key={`${ud.id}-kanjis-${mi}`} className="hover:underline" onClick={() => {
+                                  document.querySelector('#search-input').value = m
+                                  setSearchValue(m)
+                                }}
+                                >
+                                  {m}
+                                </span>
+                              )
+                            }) :
+                              kanas.map((m, mi) => {
+                                return (
+                                  <span key={`${ud.id}-kanas-${mi}`} className="hover:underline" onClick={() => {
+                                    document.querySelector('#search-input').value = m
+                                    setSearchValue(m)
+                                  }}
+                                  >
+                                    {m}
+                                  </span>
+                                )
+                              })
+                          }
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )
-              })  
+                  )
+                })
             }
           </div>
           <div className={`text-xl px-4 py-2 bg-white border rounded-lg flex justify-start drop-shadow-lg w-full`}>
             <div className={`flex flex-col justify-start content-start w-full`}>
               <div className="flex flex-none justify-between w-full py-2">
                 <div className="text-xl italic text-zinc-700">
-                  {vocabularyList ? `Vocabulary (${isPlaying ? `${listPlayerIndex+1}/` : ''}${staticList.length}) ${((staticList.length * playerInterval)/60).toFixed(0)}:${((staticList.length * playerInterval)%60).toFixed(0)}` : `Search Results (${results.length})`}
-                </div>
-                <div className="view-toggle flex" style={{transition: 'all 300ms'}}>
-                {vocabularyList === false && (
-                  <button
-                    className={`flex-none ${inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
+                  <div 
                     style={{transition: 'all 300ms'}}
-                    onClick={
-                      () => {
-                        // console.log(userInputTag,userInputTag.length > 0)
-                        studyVocabList(vocabularyList ? activeVocabulary : results, userInputTag)
+                    onClick={() => setAppMode('vocabulary')}
+                    className={`${appMode==='vocabulary' ? '' : 'opacity-30'} hover:opacity-100 inline-block pr-8 bg-transparent border-none p-0 hover:cursor-pointer focus:outline-none`}
+                  >  
+                    {`Vocabulary (${isPlaying ? `${listPlayerIndex + 1}/` : ''}${staticList.length}) ${((staticList.length * playerInterval) / 60).toFixed(0)}:${((staticList.length * playerInterval) % 60).toFixed(0)}`}
+                  </div>
+                  <div
+                    style={{transition: 'all 300ms'}}
+                    className={`${appMode==='search-results' ? '' : 'opacity-30'} hover:opacity-100 inline-block pr-8 bg-transparent border-none p-0 hover:cursor-pointer focus:outline-none`}
+                    onClick={() => setAppMode('search-results')}
+                  >
+                    {`Search Results (${results.length})`}
+                  </div>
+                  {/* <div
+                    style={{transition: 'all 300ms'}}
+                    className={`${appMode==='reading' ? '' : 'opacity-30'} hover:opacity-100 inline-block pr-8 bg-transparent border-none p-0 hover:cursor-pointer focus:outline-none`}
+                    onClick={() => setAppMode('reading')}
+                  >
+                    {`Reading`}
+                  </div> */}
+                  {/* {
+                    vocabularyList ? 
+                    `Vocabulary (${isPlaying ? `${listPlayerIndex + 1}/` : ''}${staticList.length}) ${((staticList.length * playerInterval) / 60).toFixed(0)}:${((staticList.length * playerInterval) % 60).toFixed(0)}` : 
+                    `Search Results (${results.length})`
+                  } */}
+                </div>
+                <div className="view-toggle flex" style={{ transition: 'all 300ms' }}>
+                  {appMode !== 'vocabulary' && (
+                    <button
+                      className={`flex-none ${inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
+                      style={{ transition: 'all 300ms' }}
+                      onClick={
+                        () => {
+                          // console.log(userInputTag,userInputTag.length > 0)
+                          studyVocabList(appMode === 'vocabulary' ? activeVocabulary : results, userInputTag)
+                        }
                       }
-                    }
-                  ><div>Study All</div></button>
-                )}
+                    ><div>Study All</div></button>
+                  )}
                   {
-                    vocabularyList === true && (
-                    <div>
-                      <button
-                        className={`${isPlaying ? activeClass : inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
-                        style={{transition: 'all 300ms'}}
-                        onClick={() => {
-                            if(isPlaying) {
+                    appMode === 'vocabulary' && (
+                      <div>
+                        <button
+                          className={`${isPlaying ? activeClass : inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
+                          style={{ transition: 'all 300ms' }}
+                          onClick={() => {
+                            if (isPlaying) {
                               setIsPlaying(false)
                               window.clearInterval(window.timerInterval)
                             } else {
@@ -663,38 +693,38 @@ function App() {
                             }
                             document.querySelector('#play-controller-input').focus()
                           }
-                        }
-                      >{`${isPlaying ? 'Stop' : 'Play'}`}</button>
+                          }
+                        >{`${isPlaying ? 'Stop' : 'Play'}`}</button>
 
-                      <input style={{left: '0px', top: '0px'}} className="opacity-0 fixed bg-transparent" id="play-controller-input" placeholder={''} type="text" onKeyDown={
-                        (e) => {
-                          if(e.key === 'ArrowUp') {
-                            testVocab((window.timerValue % playerInterval) === 0 ? 10 : (window.timerValue % playerInterval) * (10 / playerInterval))
+                        <input style={{ left: '0px', top: '0px' }} className="opacity-0 fixed bg-transparent" id="play-controller-input" placeholder={''} type="text" onKeyDown={
+                          (e) => {
+                            if (e.key === 'ArrowUp') {
+                              testVocab((window.timerValue % playerInterval) === 0 ? 10 : (window.timerValue % playerInterval) * (10 / playerInterval))
+                            }
+                            if (e.key === 'ArrowDown') {
+                              testVocab((window.timerValue % playerInterval) === 0 ? -10 : (window.timerValue % playerInterval) * (10 / playerInterval) * -1)
+                            }
                           }
-                          if(e.key === 'ArrowDown') {
-                            testVocab((window.timerValue % playerInterval) === 0 ? -10 : (window.timerValue % playerInterval) * (10 / playerInterval) * -1)
-                          }
-                        }
-                      } />
+                        } />
 
-                      <input style={{width: '75px'}} id="player-interval" className="ml-1 text-sm border-2 rounded-lg w-full p-1 pl-2" value={playerInterval} placeholder='Seconds' type="text" onChange={(e) => setPlayerInterval(e.target.value)} />
-                      <button
-                        className={`ml-1 ${resultsInteractionMode === 'flashcard' ? activeClass : inactiveClass} text-sm px-4 py-2 rounded-lg inline-block`}
-                        style={{transition: 'all 300ms'}}
-                        onClick={() => {
-                          resultsInteractionMode === 'flashcard' ? setResultsInteractionMode('') : setResultsInteractionMode('flashcard')
+                        <input style={{ width: '75px' }} id="player-interval" className="ml-1 text-sm border-2 rounded-lg w-full p-1 pl-2" value={playerInterval} placeholder='Seconds' type="text" onChange={(e) => setPlayerInterval(e.target.value)} />
+                        <button
+                          className={`ml-1 ${resultsInteractionMode === 'flashcard' ? activeClass : inactiveClass} text-sm px-4 py-2 rounded-lg inline-block`}
+                          style={{ transition: 'all 300ms' }}
+                          onClick={() => {
+                            resultsInteractionMode === 'flashcard' ? setResultsInteractionMode('') : setResultsInteractionMode('flashcard')
                           }
-                        }
-                      >Flashcard</button>
-                    </div>
+                          }
+                        >Flashcard</button>
+                      </div>
                     )
                   }
                   <button
                     className={`${resultsViewMode === 'notecard' ? activeClass : inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
-                    style={{transition: 'all 300ms'}}
+                    style={{ transition: 'all 300ms' }}
                     onClick={() => {
                       resultsViewMode === 'notecard' ? setResultsViewMode('') : setResultsViewMode('notecard')
-                      }
+                    }
                     }
                   >Notecard</button>
                 </div>
@@ -704,7 +734,7 @@ function App() {
                 {`
                   .fade-in-10-15 {
                     opacity: 0;
-                    animation: fadeInAnimation ease-in ${(playerInterval/2) * 3}s forwards;
+                    animation: fadeInAnimation ease-in ${(playerInterval / 2) * 3}s forwards;
                   }        
                 
                   .fade-in-5-10 {
@@ -714,64 +744,64 @@ function App() {
                   
                   .fade-in-0-5 {
                     opacity: 0;
-                    animation: fadeInAnimation ${playerInterval/2}s forwards;
+                    animation: fadeInAnimation ${playerInterval / 2}s forwards;
                   }
                 `}
               </style>
               <div className={`flex ${resultsViewMode === 'notecard' ? 'flex-wrap self-start justify-start' : 'flex-col justify-start'} `}>
-                {(textMode === true && vocabularyList && activeVocabulary && (<div>Textmode</div>))}
-                {(textMode === false && vocabularyList === false && results.length > 0 && isPlaying === false) && (
+                {(appMode === 'reading' && activeVocabulary && (<div>Textmode</div>))}
+                {(appMode === 'search-results' && results.length > 0) && (
                   results
-                  .slice(0, 50)
-                  .map(r => DisplayVocab({
-                    vocab: r,
-                    parentSetter: setSearchValue,
-                    userDataId: userData.words[r.id],
-                    userData: userData,
-                    setUserData: setUserData,
-                    type:resultsViewMode,
-                    exactKanjiKana: exactKanjiKana,
-                    searchValue: searchArray,
-                    resultsInteractionMode: resultsInteractionMode,
-                    setTagListSearchValue: setTagListSearchValue,
-                    studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
-                  })
+                    .slice(0, 50)
+                    .map(r => DisplayVocab({
+                      vocab: r,
+                      parentSetter: setSearchValue,
+                      userDataId: userData.words[r.id],
+                      userData: userData,
+                      setUserData: setUserData,
+                      type: resultsViewMode,
+                      exactKanjiKana: exactKanjiKana,
+                      searchValue: searchArray,
+                      resultsInteractionMode: resultsInteractionMode,
+                      setTagListSearchValue: setTagListSearchValue,
+                      studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
+                    })
                 ))}
-                {(textMode === false && vocabularyList !== false && isPlaying === false) && (
+                {(appMode === 'vocabulary' && isPlaying === false) && (
                   activeVocabulary
-                  .slice(0, 50)            
-                  .map(r => DisplayVocab({
-                    vocab: r, 
-                    parentSetter: setSearchValue, 
-                    userDataId: userData.words[r.id], 
-                    userData: userData, 
-                    setUserData: setUserData, 
-                    type: resultsViewMode, 
-                    exactKanjiKana: exactKanjiKana, 
-                    searchValue: searchArray, 
-                    resultsInteractionMode: resultsInteractionMode, 
-                    setTagListSearchValue: setTagListSearchValue, 
-                    studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
-                  })
-                ))}
-                {(textMode === false && vocabularyList !== false && isPlaying === true) && (
+                    .slice(0, 50)
+                    .map(r => DisplayVocab({
+                      vocab: r,
+                      parentSetter: setSearchValue,
+                      userDataId: userData.words[r.id],
+                      userData: userData,
+                      setUserData: setUserData,
+                      type: resultsViewMode,
+                      exactKanjiKana: exactKanjiKana,
+                      searchValue: searchArray,
+                      resultsInteractionMode: resultsInteractionMode,
+                      setTagListSearchValue: setTagListSearchValue,
+                      studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
+                    })
+                    ))}
+                {(appMode === 'vocabulary' && isPlaying === true) && (
                   staticList
-                  .filter((f, fi) => {
-                    return isPlaying ? (fi === listPlayerIndex) : f 
-                  })
-                  .map(r => DisplayVocab({
-                    vocab: r, 
-                    parentSetter: setSearchValue, 
-                    userDataId: userData.words[r.id], 
-                    userData: userData, 
-                    setUserData: setUserData, 
-                    type: resultsViewMode, 
-                    exactKanjiKana: exactKanjiKana, 
-                    searchArray: searchArray, 
-                    resultsInteractionMode: resultsInteractionMode, 
-                    setTagListSearchValue: setTagListSearchValue, 
-                    studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
-                  }))
+                    .filter((f, fi) => {
+                      return isPlaying ? (fi === listPlayerIndex) : f
+                    })
+                    .map(r => DisplayVocab({
+                      vocab: r,
+                      parentSetter: setSearchValue,
+                      userDataId: userData.words[r.id],
+                      userData: userData,
+                      setUserData: setUserData,
+                      type: resultsViewMode,
+                      exactKanjiKana: exactKanjiKana,
+                      searchArray: searchArray,
+                      resultsInteractionMode: resultsInteractionMode,
+                      setTagListSearchValue: setTagListSearchValue,
+                      studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
+                    }))
                 )}
               </div>
             </div>
