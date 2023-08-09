@@ -21,7 +21,6 @@ import { DisplayVocab } from './components/DisplayVocab'
 // 2. only show first 25 words upon search to save memory
 
 
-
 function App() {
   const [results, setResults] = useState([])
   const [userData, setUserData] = useState(null)
@@ -48,7 +47,69 @@ function App() {
   const [staticList, setStaticList] = useState([])
   const [playerInterval, setPlayerInterval] = useState(10)
   const [appMode, setAppMode] = useState('vocabulary')
+  const [readingVocab, setReadingVocab] = useState([]) // userDataEntries copies
 
+  const testVocabId = (score, id) => {
+    let userDataCopy = { ...userData }
+    if(userData.words[id].events !== undefined){
+      userDataCopy.words[id].events.push(createScore(score))
+    } 
+    saveUserData(userDataCopy)
+    setUserData(userDataCopy)
+  }
+
+  const getRandomWords = (numberOfWords = 50) => {
+    const vocabCSV = userData && activeVocabulary.map(ud => {
+      let kanjis = ud.kanji.length > 0 ? ud.kanji.map(kj => kj.text) : [];
+      let kanas = ud.kana.length > 0 ? ud.kana.map(kj => kj.text) : [];
+
+      return kanjis.length ?
+        kanjis.map(m => `${ud.id}:${m}`) :
+        kanas.map(m => `${ud.id}:${m}`)
+    })
+
+    const reducedVocabCSV = vocabCSV.reduce((acc, val) => {
+      return acc.concat(val)
+    })
+
+    let totalList = []
+    for(let vocabIndex = 0; vocabIndex < numberOfWords; vocabIndex++){
+        totalList.push(reducedVocabCSV[Math.round((reducedVocabCSV.length - 1) * Math.random())])
+    }
+    console.log(totalList)
+  }
+
+  window.getRandomWords = getRandomWords
+  window.activeVocabulary = activeVocabulary
+
+  // const textVocabWordParentSetter = () => {
+  //   const currentReadingVocab = readingVocab
+  // }
+
+  const TextVocabWord = (word, id, score = 10, parentSetter = () => {}) => {
+    return (
+    <button
+      // className={`ml-1 ${vocabScoreState === 10 ? activeClass : inactiveClass} px-4 py-2 rounded-lg inline-block mx-1`}
+      className={`ml-1 ${inactiveClass} px-4 py-2 rounded-lg inline-block mx-1`}
+      style={{ transition: 'all 300ms' }}
+      onClick={
+        () => {
+          parentSetter(id, score * -1)
+        }
+      }
+      // onClick={() => testVocabId(score, id)}
+    >{word}</button>
+
+      // <span
+      //   className={`hover:cursor-pointer text-gray-500 hover:text-black font-bold`} onClick={() => testVocabId(score, id)}
+      // >
+      //   {word}
+      // </span>
+    )
+  }
+
+  const w = TextVocabWord
+  
   const studyVocabAddUserDataEntry = (entry) => {
     setUserDataEntries([...userDataEntries, entry])
   }
@@ -223,6 +284,7 @@ function App() {
     const fetchSetUserDataEntries = async () => {
       if (userDataEntries === null) {
         const searchByIdsResults = await searchByIds(Object.keys(userData.words));
+        console.log(searchByIdsResults, userData)
         setUserDataEntries(searchByIdsResults)
       }
     }
@@ -636,6 +698,24 @@ function App() {
           </div>
           <div className={`text-xl px-4 py-2 bg-white border rounded-lg flex justify-start drop-shadow-lg w-full`}>
             <div className={`flex flex-col justify-start content-start w-full`}>
+            <style>
+                {`
+                  .fade-in-10-15 {
+                    opacity: 0;
+                    animation: fadeInAnimation ease-in ${(playerInterval / 2) * 3}s forwards;
+                  }        
+                
+                  .fade-in-5-10 {
+                    opacity: 0;
+                    animation: fadeInAnimationDelay ${playerInterval}s forwards;
+                  }
+                  
+                  .fade-in-0-5 {
+                    opacity: 0;
+                    animation: fadeInAnimation ${playerInterval / 2}s forwards;
+                  }
+                `}
+              </style>
               <div className="flex flex-none justify-between w-full py-2">
                 <div className="text-xl italic text-zinc-700">
                   <div 
@@ -652,13 +732,13 @@ function App() {
                   >
                     {`Search Results (${results.length})`}
                   </div>
-                  {/* <div
+                  <div
                     style={{transition: 'all 300ms'}}
                     className={`${appMode==='reading' ? '' : 'opacity-30'} hover:opacity-100 inline-block pr-8 bg-transparent border-none p-0 hover:cursor-pointer focus:outline-none`}
                     onClick={() => setAppMode('reading')}
                   >
-                    {`Reading`}
-                  </div> */}
+                    Reading
+                  </div>
                   {/* {
                     vocabularyList ? 
                     `Vocabulary (${isPlaying ? `${listPlayerIndex + 1}/` : ''}${staticList.length}) ${((staticList.length * playerInterval) / 60).toFixed(0)}:${((staticList.length * playerInterval) % 60).toFixed(0)}` : 
@@ -666,7 +746,7 @@ function App() {
                   } */}
                 </div>
                 <div className="view-toggle flex" style={{ transition: 'all 300ms' }}>
-                  {appMode !== 'vocabulary' && (
+                  {appMode !== 'vocabulary' && appMode !== 'reading' && (
                     <button
                       className={`flex-none ${inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
                       style={{ transition: 'all 300ms' }}
@@ -719,37 +799,43 @@ function App() {
                       </div>
                     )
                   }
-                  <button
-                    className={`${resultsViewMode === 'notecard' ? activeClass : inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
-                    style={{ transition: 'all 300ms' }}
-                    onClick={() => {
-                      resultsViewMode === 'notecard' ? setResultsViewMode('') : setResultsViewMode('notecard')
-                    }
-                    }
-                  >Notecard</button>
+                  {(appMode !== 'reading' && (
+                    <button
+                      className={`${resultsViewMode === 'notecard' ? activeClass : inactiveClass} ml-1 text-sm px-4 py-2 rounded-lg inline-block`}
+                      style={{ transition: 'all 300ms' }}
+                      onClick={() => {
+                        resultsViewMode === 'notecard' ? setResultsViewMode('') : setResultsViewMode('notecard')
+                      }
+                      }
+                    >Notecard</button>)                
+                  )}
                 </div>
 
               </div>
-              <style>
-                {`
-                  .fade-in-10-15 {
-                    opacity: 0;
-                    animation: fadeInAnimation ease-in ${(playerInterval / 2) * 3}s forwards;
-                  }        
-                
-                  .fade-in-5-10 {
-                    opacity: 0;
-                    animation: fadeInAnimationDelay ${playerInterval}s forwards;
-                  }
-                  
-                  .fade-in-0-5 {
-                    opacity: 0;
-                    animation: fadeInAnimation ${playerInterval / 2}s forwards;
-                  }
-                `}
-              </style>
               <div className={`flex ${resultsViewMode === 'notecard' ? 'flex-wrap self-start justify-start' : 'flex-col justify-start'} `}>
-                {(appMode === 'reading' && activeVocabulary && (<div>Textmode</div>))}
+                {(appMode === 'reading' && (
+                  <div className={`text-gray-500 bg-white w-full`}>
+                    <div className='reading-text mt-2 mb-4'>
+                      {w('尻', 1254490)}お父さん…熊ですか?
+                    </div>
+                    {
+                      DisplayVocab({
+                        vocab: userDataEntries.find(ude => ude.id === '1254490'),
+                        parentSetter: setSearchValue,
+                        // userDataId: userData.words[r.id],
+                        userDataId: userData.words['1254490'],
+                        userData: userData,
+                        setUserData: setUserData,
+                        type: resultsViewMode,
+                        exactKanjiKana: exactKanjiKana,
+                        searchValue: searchArray,
+                        resultsInteractionMode: resultsInteractionMode,
+                        setTagListSearchValue: setTagListSearchValue,
+                        studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
+                      })
+                    }
+                  </div>
+                ))}
                 {(appMode === 'search-results' && results.length > 0) && (
                   results
                     .slice(0, 50)
@@ -783,7 +869,7 @@ function App() {
                       setTagListSearchValue: setTagListSearchValue,
                       studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
                     })
-                    ))}
+                ))}
                 {(appMode === 'vocabulary' && isPlaying === true) && (
                   staticList
                     .filter((f, fi) => {
