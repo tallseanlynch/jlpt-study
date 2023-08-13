@@ -47,7 +47,6 @@ function App() {
   const [staticList, setStaticList] = useState([])
   const [playerInterval, setPlayerInterval] = useState(10)
   const [appMode, setAppMode] = useState('vocabulary')
-  const [readingVocab, setReadingVocab] = useState([]) // userDataEntries copies
 
   const testVocabId = (score, id) => {
     let userDataCopy = { ...userData }
@@ -86,30 +85,154 @@ function App() {
   //   const currentReadingVocab = readingVocab
   // }
 
-  const TextVocabWord = (word, id, score = 10, parentSetter = () => {}) => {
+  const TextVocabWord = ({id, word, score = 10, parentSetter = () => {}}) => {
+    const activeClassTextVocabWord = 'hover:bg-zinc-500 bg-zinc-700 cursor-pointer text-white'
+    const inactiveClassTextVocabWord = 'hover:border-zinc-500 border-zinc-200 border-2 cursor-pointer text-black'
+
     return (
     <button
       // className={`ml-1 ${vocabScoreState === 10 ? activeClass : inactiveClass} px-4 py-2 rounded-lg inline-block mx-1`}
-      className={`ml-1 ${inactiveClass} px-4 py-2 rounded-lg inline-block mx-1`}
+      className={`ml-1 ${inactiveClassTextVocabWord} px-4 py-2 m-2 rounded-lg inline-block`}
       style={{ transition: 'all 300ms' }}
       onClick={
         () => {
-          parentSetter(id, score * -1)
+          console.log(id, word)
+          // parentSetter(id, score * -1)
         }
       }
       // onClick={() => testVocabId(score, id)}
     >{word}</button>
-
-      // <span
-      //   className={`hover:cursor-pointer text-gray-500 hover:text-black font-bold`} onClick={() => testVocabId(score, id)}
-      // >
-      //   {word}
-      // </span>
     )
   }
 
-  const w = TextVocabWord
+  const Word = TextVocabWord
   
+  // This is the utility function that parses the string
+  function parseAndRenderString(sentence) {
+    const regex = /{{(\d+):([\u3040-\u30FF\u4E00-\u9FFF]+)}}/g;
+    
+    let lastIndex = 0;
+    const elements = [];
+    // const activeReadingVocab = []
+    // const readingVocabCopy = [...readingVocabCopy]
+
+    let match;
+    while ((match = regex.exec(sentence)) !== null) {
+        // Add the text leading up to the match
+        if (match.index > lastIndex) {
+            elements.push(sentence.substring(lastIndex, match.index));
+        }
+
+        // Add the React component for the matched word
+        const [fullMatch, id, word] = match;
+        elements.push(<Word key={id} id={id} word={word} />);
+        // activeReadingVocab.push({id, word, score: 10})
+
+        // Move the pointer
+        lastIndex = match.index + fullMatch.length;
+    }
+
+    // If there's any text left after the last match, add it to the elements
+    if (lastIndex < sentence.length) {
+        elements.push(sentence.substr(lastIndex));
+    }
+    // setReadingVocab(activeReadingVocab)
+    return elements;
+  }
+
+  function parseIds(sentence) {
+    const regex = /{{(\d+):([\u3040-\u30FF\u4E00-\u9FFF]+)}}/g;
+    
+    let lastIndex = 0;
+    const elements = [];
+    // const activeReadingVocab = []
+    // const readingVocabCopy = [...readingVocabCopy]
+
+    let match;
+    while ((match = regex.exec(sentence)) !== null) {
+        // Add the text leading up to the match
+        // if (match.index > lastIndex) {
+        //     elements.push(sentence.substring(lastIndex, match.index));
+        // }
+
+        // Add the React component for the matched word
+        const [fullMatch, id, word] = match;
+        elements.push({id, word, score: 10});
+        // activeReadingVocab.push({id, word, score: 10})
+
+        // Move the pointer
+        lastIndex = match.index + fullMatch.length;
+    }
+
+    // If there's any text left after the last match, add it to the elements
+    // if (lastIndex < sentence.length) {
+    //     elements.push(sentence.substr(lastIndex));
+    // }
+    // setReadingVocab(activeReadingVocab)
+    console.log(elements)
+    return elements;
+  }
+
+
+  const readings = {
+    first: "{{2842928:関}}の橋の上で、{{1220880:機関車}}が通るたびに、私はその動きに{{1589880:係わる}}子供たちを見る。"
+  }
+
+  // Your main component
+  const Reading = () => {
+    const [activeReading, setActiveReading] = useState('first') // where the reading comes from
+    const [readingVocab, setReadingVocab] = useState([]) // temp to adjust scores
+    const [renderElements, setRenderElements] = useState([]) // temp to adjust scores
+  
+    useEffect(() => {
+      setReadingVocab(parseIds(readings[activeReading]))
+      setRenderElements(parseAndRenderString(readings[activeReading]))
+    }, [activeReading])
+
+    const ReadingToolbar = () => {
+      return (
+        <div
+          className="w-full flex justify-between mb-2 py-4 border-y-2 border-zinc-100"
+        >
+            <button
+              style={{ transition: 'all 300ms', minHeight: '42px' }}
+              className={`${inactiveClass} px-4 py-2 text-sm rounded-lg inline-block`}
+              onClick={() => {
+                console.log('score reading')
+              }}
+            >Score Reading</button>
+        </div>
+      )
+    }
+
+    return (<div>
+      {<ReadingToolbar />}
+      <div className="flex py-12 justify-center">
+        <span className="text-4xl">「</span>
+        <div className="py-4 px-8">
+          {renderElements}
+        </div>
+        <span className="text-4xl self-end">」</span>
+      </div>
+      {readingVocab.map((activeReadingVocabWord) => {
+        return DisplayVocab({
+          vocab: userDataEntries.find(ude => ude.id === activeReadingVocabWord.id),
+          parentSetter: setSearchValue,
+          // userDataId: userData.words[r.id],
+          userDataId: userData.words[activeReadingVocabWord.id],
+          userData: userData,
+          setUserData: setUserData,
+          type: resultsViewMode,
+          exactKanjiKana: exactKanjiKana,
+          searchValue: searchArray,
+          resultsInteractionMode: resultsInteractionMode,
+          setTagListSearchValue: setTagListSearchValue,
+          studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
+        })        
+      })}
+    </div>);
+  }
+
   const studyVocabAddUserDataEntry = (entry) => {
     setUserDataEntries([...userDataEntries, entry])
   }
@@ -170,6 +293,22 @@ function App() {
     }
     saveUserData(userDataCopy)
     setUserData(userDataCopy)
+  }
+
+  const createReadingUserData = ({readingName, wordsIds, reading}) => {
+    let userDataCopy = { ...userData }
+    
+    if(userDataCopy.readings === undefined) {
+      userDataCopy.readings = {}
+    }
+
+    userDataCopy.readings[readingName] = {
+      wordsIds,
+      reading  
+    }
+
+    saveUserData(userDataCopy)
+    setUserData(userDataCopy)    
   }
 
   const searchFilter = useCallback((e) => {
@@ -814,26 +953,11 @@ function App() {
               </div>
               <div className={`flex ${resultsViewMode === 'notecard' ? 'flex-wrap self-start justify-start' : 'flex-col justify-start'} `}>
                 {(appMode === 'reading' && (
-                  <div className={`text-gray-500 bg-white w-full`}>
-                    <div className='reading-text mt-2 mb-4'>
-                      {w('尻', 1254490)}お父さん…熊ですか?
+                  <div className={`bg-white w-full`}>
+                    <div className='text-gray-500 reading-text mt-2 mb-4'>
+                      <Reading />
+                      {/* {Word(1254490, '尻')}お父さん…熊ですか? */}
                     </div>
-                    {
-                      DisplayVocab({
-                        vocab: userDataEntries.find(ude => ude.id === '1254490'),
-                        parentSetter: setSearchValue,
-                        // userDataId: userData.words[r.id],
-                        userDataId: userData.words['1254490'],
-                        userData: userData,
-                        setUserData: setUserData,
-                        type: resultsViewMode,
-                        exactKanjiKana: exactKanjiKana,
-                        searchValue: searchArray,
-                        resultsInteractionMode: resultsInteractionMode,
-                        setTagListSearchValue: setTagListSearchValue,
-                        studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
-                      })
-                    }
                   </div>
                 ))}
                 {(appMode === 'search-results' && results.length > 0) && (
