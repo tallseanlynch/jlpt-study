@@ -173,6 +173,10 @@ function App() {
     handleSearchFilter()
   }, [exactKanjiKana, exactSearch, isPlaying, listPlayerIndex, userData])
 
+  useEffect(() => {
+    console.log(results)    
+  }, [results])
+
   const onInputChange = (e) => {
     setSearchValue(String(e.target.value))
   }
