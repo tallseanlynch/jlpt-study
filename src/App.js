@@ -14,6 +14,7 @@ import {
 import caret from './images/caret.png'
 import copy from './images/copy.png'
 import { DisplayVocab } from './components/DisplayVocab'
+import { Reading } from './components/Reading'
 
 // todo: 
 // 1. search for JLPT level of words and kanjis
@@ -48,190 +49,6 @@ function App() {
   const [playerInterval, setPlayerInterval] = useState(10)
   const [appMode, setAppMode] = useState('vocabulary')
 
-  const testVocabId = (score, id) => {
-    let userDataCopy = { ...userData }
-    if(userData.words[id].events !== undefined){
-      userDataCopy.words[id].events.push(createScore(score))
-    } 
-    saveUserData(userDataCopy)
-    setUserData(userDataCopy)
-  }
-
-  const getRandomWords = (numberOfWords = 50) => {
-    const vocabCSV = userData && activeVocabulary.map(ud => {
-      let kanjis = ud.kanji.length > 0 ? ud.kanji.map(kj => kj.text) : [];
-      let kanas = ud.kana.length > 0 ? ud.kana.map(kj => kj.text) : [];
-
-      return kanjis.length ?
-        kanjis.map(m => `${ud.id}:${m}`) :
-        kanas.map(m => `${ud.id}:${m}`)
-    })
-
-    const reducedVocabCSV = vocabCSV.reduce((acc, val) => {
-      return acc.concat(val)
-    })
-
-    let totalList = []
-    for(let vocabIndex = 0; vocabIndex < numberOfWords; vocabIndex++){
-        totalList.push(reducedVocabCSV[Math.round((reducedVocabCSV.length - 1) * Math.random())])
-    }
-    console.log(totalList)
-  }
-
-  window.getRandomWords = getRandomWords
-  window.activeVocabulary = activeVocabulary
-
-  // const textVocabWordParentSetter = () => {
-  //   const currentReadingVocab = readingVocab
-  // }
-
-  const TextVocabWord = ({id, word, score = 10, parentSetter = () => {}}) => {
-    const activeClassTextVocabWord = 'hover:bg-zinc-500 bg-zinc-700 cursor-pointer text-white'
-    const inactiveClassTextVocabWord = 'hover:border-zinc-500 border-zinc-200 border-2 cursor-pointer text-black'
-
-    return (
-    <button
-      // className={`ml-1 ${vocabScoreState === 10 ? activeClass : inactiveClass} px-4 py-2 rounded-lg inline-block mx-1`}
-      className={`ml-1 ${inactiveClassTextVocabWord} px-4 py-2 m-2 rounded-lg inline-block`}
-      style={{ transition: 'all 300ms' }}
-      onClick={
-        () => {
-          console.log(id, word)
-          // parentSetter(id, score * -1)
-        }
-      }
-      // onClick={() => testVocabId(score, id)}
-    >{word}</button>
-    )
-  }
-
-  const Word = TextVocabWord
-  
-  // This is the utility function that parses the string
-  function parseAndRenderString(sentence) {
-    const regex = /{{(\d+):([\u3040-\u30FF\u4E00-\u9FFF]+)}}/g;
-    
-    let lastIndex = 0;
-    const elements = [];
-    // const activeReadingVocab = []
-    // const readingVocabCopy = [...readingVocabCopy]
-
-    let match;
-    while ((match = regex.exec(sentence)) !== null) {
-        // Add the text leading up to the match
-        if (match.index > lastIndex) {
-            elements.push(sentence.substring(lastIndex, match.index));
-        }
-
-        // Add the React component for the matched word
-        const [fullMatch, id, word] = match;
-        elements.push(<Word key={id} id={id} word={word} />);
-        // activeReadingVocab.push({id, word, score: 10})
-
-        // Move the pointer
-        lastIndex = match.index + fullMatch.length;
-    }
-
-    // If there's any text left after the last match, add it to the elements
-    if (lastIndex < sentence.length) {
-        elements.push(sentence.substr(lastIndex));
-    }
-    // setReadingVocab(activeReadingVocab)
-    return elements;
-  }
-
-  function parseIds(sentence) {
-    const regex = /{{(\d+):([\u3040-\u30FF\u4E00-\u9FFF]+)}}/g;
-    
-    let lastIndex = 0;
-    const elements = [];
-    // const activeReadingVocab = []
-    // const readingVocabCopy = [...readingVocabCopy]
-
-    let match;
-    while ((match = regex.exec(sentence)) !== null) {
-        // Add the text leading up to the match
-        // if (match.index > lastIndex) {
-        //     elements.push(sentence.substring(lastIndex, match.index));
-        // }
-
-        // Add the React component for the matched word
-        const [fullMatch, id, word] = match;
-        elements.push({id, word, score: 10});
-        // activeReadingVocab.push({id, word, score: 10})
-
-        // Move the pointer
-        lastIndex = match.index + fullMatch.length;
-    }
-
-    // If there's any text left after the last match, add it to the elements
-    // if (lastIndex < sentence.length) {
-    //     elements.push(sentence.substr(lastIndex));
-    // }
-    // setReadingVocab(activeReadingVocab)
-    console.log(elements)
-    return elements;
-  }
-
-
-  const readings = {
-    first: "{{2842928:関}}の橋の上で、{{1220880:機関車}}が通るたびに、私はその動きに{{1589880:係わる}}子供たちを見る。"
-  }
-
-  // Your main component
-  const Reading = () => {
-    const [activeReading, setActiveReading] = useState('first') // where the reading comes from
-    const [readingVocab, setReadingVocab] = useState([]) // temp to adjust scores
-    const [renderElements, setRenderElements] = useState([]) // temp to adjust scores
-  
-    useEffect(() => {
-      setReadingVocab(parseIds(readings[activeReading]))
-      setRenderElements(parseAndRenderString(readings[activeReading]))
-    }, [activeReading])
-
-    const ReadingToolbar = () => {
-      return (
-        <div
-          className="w-full flex justify-between mb-2 py-4 border-y-2 border-zinc-100"
-        >
-            <button
-              style={{ transition: 'all 300ms', minHeight: '42px' }}
-              className={`${inactiveClass} px-4 py-2 text-sm rounded-lg inline-block`}
-              onClick={() => {
-                console.log('score reading')
-              }}
-            >Score Reading</button>
-        </div>
-      )
-    }
-
-    return (<div>
-      {<ReadingToolbar />}
-      <div className="flex py-12 justify-center">
-        <span className="text-4xl">「</span>
-        <div className="py-4 px-8">
-          {renderElements}
-        </div>
-        <span className="text-4xl self-end">」</span>
-      </div>
-      {readingVocab.map((activeReadingVocabWord) => {
-        return DisplayVocab({
-          vocab: userDataEntries.find(ude => ude.id === activeReadingVocabWord.id),
-          parentSetter: setSearchValue,
-          // userDataId: userData.words[r.id],
-          userDataId: userData.words[activeReadingVocabWord.id],
-          userData: userData,
-          setUserData: setUserData,
-          type: resultsViewMode,
-          exactKanjiKana: exactKanjiKana,
-          searchValue: searchArray,
-          resultsInteractionMode: resultsInteractionMode,
-          setTagListSearchValue: setTagListSearchValue,
-          studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
-        })        
-      })}
-    </div>);
-  }
 
   const studyVocabAddUserDataEntry = (entry) => {
     setUserDataEntries([...userDataEntries, entry])
@@ -365,6 +182,8 @@ function App() {
   }
 
   const onTagListInputChange = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
     setTagListSearchValue(String(e.target.value))
   }
 
@@ -626,7 +445,7 @@ function App() {
           </span>
         </div>
         <div className="flex w-full">
-          <div className={`${isPlaying ? 'w-0 overflow-hidden opacity-0' : 'w-1/4 mr-4 p-4 border rounded-lg drop-shadow-lg'} flex flex-col bg-white`} style={{ transition: 'width 300ms, opacity 300ms' }}>
+          <div className={`${isPlaying || appMode === 'reading' ? 'w-0 overflow-hidden opacity-0' : 'w-1/4 mr-4 p-4 border rounded-lg drop-shadow-lg'} flex flex-col bg-white`} style={{ transition: 'width 300ms, opacity 300ms' }}>
             <div className="flex justify-between mb-4">
               <div className="text-xl italic text-zinc-700">Vocabulary</div>
               <div className="flex">
@@ -688,7 +507,7 @@ function App() {
             <div className="flex pb-4">
               <input
                 id="list-search-input"
-                className="border-2 rounded-lg w-full p-2 pl-4"
+                className="border-2 rounded-lg w-full p-2 pl-4 text-sm"
                 placeholder={'Search'}
                 type="text"
                 onChange={onListInputChange}
@@ -766,10 +585,11 @@ function App() {
                 </div>
                 <input
                   id="list-search-tag-input"
-                  className="border-2 rounded-lg w-full p-2 pl-4"
+                  className="border-2 rounded-lg w-full p-2 pl-4 text-sm"
                   placeholder={'Tag Search'}
                   type="text"
                   onChange={onTagListInputChange}
+                  autoComplete="off"
                 />
               </div>
               <button
@@ -954,8 +774,24 @@ function App() {
               <div className={`flex ${resultsViewMode === 'notecard' ? 'flex-wrap self-start justify-start' : 'flex-col justify-start'} `}>
                 {(appMode === 'reading' && (
                   <div className={`bg-white w-full`}>
-                    <div className='text-gray-500 reading-text mt-2 mb-4'>
-                      <Reading />
+                    <div className='reading-text mt-2 mb-4'>
+                      <Reading 
+                        userData={userData}
+                        createScore={createScore}
+                        saveUserData={saveUserData}
+                        setUserData={setUserData}
+                        activeVocabulary={activeVocabulary}
+                        activeClass={activeClass}
+                        inactiveClass={inactiveClass}
+                        userDataEntries={userDataEntries}
+                        setSearchValue={setSearchValue}
+                        resultsViewMode={resultsViewMode}
+                        exactKanjiKana={exactKanjiKana}
+                        searchArray={searchArray}
+                        resultsInteractionMode={resultsInteractionMode}
+                        setTagListSearchValue={setTagListSearchValue}
+                        studyVocabAddUserDataEntry={studyVocabAddUserDataEntry}
+                      />
                       {/* {Word(1254490, '尻')}お父さん…熊ですか? */}
                     </div>
                   </div>
