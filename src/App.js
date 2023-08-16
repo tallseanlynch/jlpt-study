@@ -9,7 +9,8 @@ import {
   createAddedDate,
   search,
   searchByIds,
-  searchExact
+  searchExact,
+  tokenize
 } from './js/utils'
 import caret from './images/caret.png'
 import copy from './images/copy.png'
@@ -49,6 +50,8 @@ function App() {
   const [playerInterval, setPlayerInterval] = useState(10)
   const [appMode, setAppMode] = useState('vocabulary')
 
+window.tokenize = tokenize
+window.searchExact = searchExact
 
   const studyVocabAddUserDataEntry = (entry) => {
     setUserDataEntries([...userDataEntries, entry])

@@ -4,6 +4,18 @@ const app = express();
 const port = 9999;
 const cors = require('cors');
 const jsonDict = require('./jmdict-eng-3.5.0.json');
+const kuromoji = require("kuromoji");
+// const r = require('../../node_modules/kuromoji/dict')
+
+let appTokenizer = null
+
+kuromoji.builder({ dicPath: "../../node_modules/kuromoji/dict" }).build(function (err, tokenizer) {
+  // tokenizer is ready
+  appTokenizer = tokenizer
+  // var path = appTokenizer.tokenize("すもももももももものうち");
+  // console.log(appTokenizer.tokenize("すもももももももものうち"));
+});
+
 
 function formatDate(date) {
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -28,9 +40,21 @@ async function copyFile(srcPath, destPath, jsonData) {
 
 // Enable express to use CORS
 app.use(cors());
-
 // Enable express to parse JSON request bodies
 app.use(express.json({limit: '50mb'}));
+
+app.post('/tokenize', (req, res) => {
+  const jsonData = req.body;
+
+  // console.log(appTokenizer.tokenize("すもももももももものうち"));
+// console.log(jsonData)
+  if(appTokenizer && jsonData.reading) {
+    let searchResults = appTokenizer.tokenize(jsonData.reading)
+    console.log(searchResults)
+    res.status(200).send(JSON.stringify(searchResults));
+  }
+});
+
 app.post('/save-json', (req, res) => {
   const jsonData = req.body;
   const sourcePath = './db.json';

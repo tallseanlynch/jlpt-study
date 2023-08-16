@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^13.5.0",
     "autoprefixer": "^10.4.13",
     "cors": "^2.8.5",
+    "kuromoji": "^0.1.2",
     "postcss": "^8.4.21",
     "react": "^18.2.0",
     "react-date-picker": "^9.2.0",
