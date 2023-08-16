@@ -23,15 +23,15 @@ const KanjiSection = ({resultsInteractionMode='', recentScore, kanji, searchSett
 const Definitions = ({resultsInteractionMode='', recentScore, sense, vocab}) => {
   return (<div>
     {sense.map((s, si) => {return (
-      <div className={`pb-4 ${resultsInteractionMode === 'flashcard' && recentScore === false ? 'fade-in-5-10' : ''}`} key={`${vocab.id}-sense-${si}`} >
-        <div className=""><span className="italic text-zinc-400">{si + 1}.</span> {s.gloss.map((sg, sgi) => (<span className="inline-block" key={`${vocab.id}-sense-gloss-${sgi}`} >{sg.text}{sgi === s.gloss.length - 1 ? ';' : (<span className="pr-2 inline-block">,</span>)}</span>))}</div>
+      <div className={`pb-4 ${resultsInteractionMode === 'flashcard' && recentScore === false ? 'fade-in-5-10' : ''}`} key={`${vocab.id}-sense-${si}-${vocab.tokenPosition ? vocab.tokenPosition : ''}`} >
+        <div className=""><span className="italic text-zinc-400">{si + 1}.</span> {s.gloss.map((sg, sgi) => (<span className="inline-block" key={`${vocab.id}-sense-gloss-${sgi}-${vocab.tokenPosition ? vocab.tokenPosition : ''}`} >{sg.text}{sgi === s.gloss.length - 1 ? ';' : (<span className="pr-2 inline-block">,</span>)}</span>))}</div>
         {
           Array.isArray(s.partOfSpeech) ? s.partOfSpeech.map((pos, posi) => {
             return (
-              <div key={`${vocab.id}-sense-pos-${posi}`} className="text-sm text-zinc-400">{tags[pos]}</div>
+              <div key={`${vocab.id}-sense-pos-${posi}-${vocab.tokenPosition ? vocab.tokenPosition : ''}`} className="text-sm text-zinc-400">{tags[pos]}</div>
             )
           }) : (
-            <div key={`${vocab.id}-sense-pos`} className="text-sm text-zinc-400">{tags[s.partOfSpeechArray]}</div>
+            <div key={`${vocab.id}-sense-pos-${vocab.tokenPosition ? vocab.tokenPosition : ''}`} className="text-sm text-zinc-400">{tags[s.partOfSpeechArray]}</div>
           )
         }
         <div className="text-sm italic text-zinc-800">{s.info.map(si => (si))}</div>
@@ -47,7 +47,7 @@ const KanjiKana = ({exactWord = [], resultsInteractionMode='', kanji, vocab, kan
         if(exactWord.length === 0 || exactWord.indexOf(k.text) > -1) {
           return (
             <div                   
-              key={`${vocab.id}-kanjiKana-${ki}`}
+              key={`${vocab.id}-kanjiKana-${ki}-${vocab.tokenPosition ? vocab.tokenPosition : ''}`}
               className="pb-4"
             >
               <div className={`${kanjiClass} pb-2`} onClick={() => searchSetter(k.text)}>
@@ -62,7 +62,7 @@ const KanjiKana = ({exactWord = [], resultsInteractionMode='', kanji, vocab, kan
                     .map((ka, ki) => {
                       return (
                         <div
-                          key={`${vocab.id}-kana-${ki}`}
+                          key={`${vocab.id}-kana-${ki}-${vocab.tokenPosition ? vocab.tokenPosition : ''}`}
                           className={`${furiganaClass} cursor-pointer`}
                           onClick={() => {searchSetter(ka.text.replace(/[-.]/g, ''))}}
                         >
@@ -84,7 +84,7 @@ const KanjiKana = ({exactWord = [], resultsInteractionMode='', kanji, vocab, kan
           return ''
         }
       })}
-      {noKanji && kana.map((ka, ki) => {return (<div key={`${vocab.id}-kana-${ki}`} className={`${kanjiClass} cursor-pointer border-b border-white hover:border-zinc-500`}  onClick={() => {searchSetter(ka.text)}}>{ka.text}</div>)})}
+      {noKanji && kana.map((ka, ki) => {return (<div key={`${vocab.id}-kana-${ki}-${vocab.tokenPosition ? vocab.tokenPosition : ''}`} className={`${kanjiClass} cursor-pointer border-b border-white hover:border-zinc-500`}  onClick={() => {searchSetter(ka.text)}}>{ka.text}</div>)})}
     </div>
   )
 }
@@ -103,7 +103,7 @@ const ActivitySection  = ({ setTagListSearchValue, userIsActive, studyVocab, use
             const tagDate = `${new Date(t.t).getMonth() + 1}/${new Date(t.t).getDate()}`
             return (
               <span
-                key={`${vocab.id}-tagDate-${t.t}`}
+                key={`${vocab.id}-tagDate-${t.t}-${vocab.tokenPosition ? vocab.tokenPosition : ''}`}
                 className="text-sm bg-zinc-200 text-black rounded-lg px-2 py-1 mr-2 cursor-pointer"
                 onClick={ () => {
                   setTagListSearchValue(tagDate)
@@ -120,7 +120,7 @@ const ActivitySection  = ({ setTagListSearchValue, userIsActive, studyVocab, use
           userDataId && userDataId.events && userDataId.events.filter(f => f.type === 'score').map(t => {
             return (
               <div
-                key={`${vocab.id}-tagScore-${t.s}--${generateUUID()}`}
+                key={`${vocab.id}-tagScore-${t.s}--${generateUUID()}-${vocab.tokenPosition ? vocab.tokenPosition : ''}`}
                 className={`${t.s > 0 ? 'bg-lime-300' : 'bg-rose-300'} ${t.s === 0 ? 'bg-zinc-300' : ''} ${t.s === 'complete' ? 'bg-blue-500' : ''} text-sm rounded px-2 py-1 mr-2 mt-1 border-black`}
                 style={{opacity: (t.s === 0 || t.s === 'complete') ? 1 : Math.abs(t.s/10), height: '5px'}}
               >
@@ -195,7 +195,7 @@ export const DisplayVocab = ({
 
   if(type === 'notecard') {
     return (      
-      <div key={`${vocab.id}-note-card`} className="flex overflow-scroll vocab-word bg-white border rounded-lg p-4 mr-1 mb-1" style={{width: '250px', height: '350px'}}>
+      <div key={`${vocab.id}-note-card-${vocab.tokenPosition ? vocab.tokenPosition : ''}`} className="flex overflow-scroll vocab-word bg-white border rounded-lg p-4 mr-1 mb-1" style={{width: '250px', height: '350px'}}>
         <ActivitySection setTagListSearchValue={setTagListSearchValue} recentScore={recentScore} userIsActive={userIsActive} studyVocab={studyVocab} userDataId={userDataId} vocab={vocab} />
         <div className="self-start flex flex-col justify-start">
           <KanjiKana exactWord={exactKanjiKana ? searchValue : []} resultsInteractionMode={resultsInteractionMode} recentScore={recentScore} kanji={kanji } vocab={vocab} kanjiClass={kanjiClass} searchSetter={searchSetter} kana={kana} furiganaClass={furiganaClass} type={type} kanjiKanaMap={kanjiKanaMap} noKanji={noKanji} />
@@ -209,7 +209,7 @@ export const DisplayVocab = ({
 
   if(type === '') {
     return (      
-      <div className="vocab-word bg-white w-full flex border rounded-lg p-4 mb-2 justify-between" key={`${vocab.id}-entry`}>
+      <div className="vocab-word bg-white w-full flex border rounded-lg p-4 mb-2 justify-between" key={`${vocab.id}-entry-${vocab.tokenPosition ? vocab.tokenPosition : ''}`}>
         <div className="w-1/4 flex">
           <ActivitySection setTagListSearchValue={setTagListSearchValue} recentScore={recentScore} userIsActive={userIsActive} studyVocab={studyVocab} userDataId={userDataId} vocab={vocab} />
           <KanjiKana exactWord={exactKanjiKana ? searchValue : []} resultsInteractionMode={resultsInteractionMode} recentScore={recentScore}  kanji={kanji } vocab={vocab} kanjiClass={kanjiClass} searchSetter={searchSetter} kana={kana} furiganaClass={furiganaClass} type={type} kanjiKanaMap={kanjiKanaMap} noKanji={noKanji} />

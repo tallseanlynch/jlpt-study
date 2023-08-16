@@ -36,6 +36,26 @@ export const tokenize = (reading) => {
   })
 }
 
+export const searchExactTokens = (tokenSearchQueryArray) => {
+  return fetch('http://localhost:9999/search', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ tokens: tokenSearchQueryArray })
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation: ', error);
+  })
+}
+
+
 export const searchExact = (searchQueryArray) => {
   return fetch('http://localhost:9999/search', {
     method: 'POST',

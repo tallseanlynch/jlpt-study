@@ -85,6 +85,22 @@ const searchExact = (searchQueryArray) => {
   });
 }
 
+// searchQueryArray = [{searchQuery: string, tokenPosition: number}
+const searchExactTokens = (searchQueryArray) => {
+  let tokenResults = []
+
+  jsonDict.words.forEach(f => {
+    let searchExactValues = [...f.kana.map(k => k.text), ...f.kanji.map(k => k.text)];
+    searchQueryArray.forEach(sq => {
+      if(searchExactValues.includes(sq.searchQuery)) {
+        tokenResults.push({ ...sq, vocab: f})
+      }
+    })  
+  });
+
+  return tokenResults
+}
+
 const searchByIds = (searchIdArray) => {
   let items = jsonDict.words.filter(f => {
     return searchIdArray.indexOf(f.id) > -1
@@ -104,6 +120,12 @@ app.post('/search', (req, res) => {
     let searchResults = jsonData.exact !== undefined ? searchExact(jsonData.query) : search(jsonData.query)
     res.status(200).send(JSON.stringify(searchResults));  
   }
+
+  if(jsonData.tokens && jsonData.tokens.length > 0) {
+    let searchResults = searchExactTokens(jsonData.tokens)
+    res.status(200).send(JSON.stringify(searchResults));  
+  }
+
 });
 
 app.listen(port, () => {
