@@ -258,36 +258,33 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
         setReadingVocab(readingVocabCopy)
         console.log(readingVocab)
       }} />
-      <div className="flex py-12 justify-center">
-        <span className="text-4xl">「</span>
-        <pre className="px-8 font-thin whitespace-pre">
-          {tokens && parseAndRenderString(tokens, setReadingVocabScoreById, Word, readingVocab)}
-        </pre>
-        <span className="text-4xl self-end">」</span>
-      </div>
-      {/* <div className="flex py-12 px-4 justify-center">
-        <span className="text-4xl">"</span>
-        <div className="px-8 font-weight-100 italic">
-            {readings[activeReading].english}
+        <div className="flex">
+            <div className="flex py-12 justify-center">
+                <span className="text-4xl">「</span>
+                <pre className="px-8 font-thin whitespace-pre">
+                {tokens && parseAndRenderString(tokens, setReadingVocabScoreById, Word, readingVocab)}
+                </pre>
+                <span className="text-4xl self-end">」</span>
+            </div>
+
+            <div className="py-12">
+                {userDataEntries.length > 0 && tokens.length > 0 && readingVocab.length > 0 && readingVocab.map((activeReadingVocabWord) => {
+                    return DisplayVocab({
+                    vocab: activeReadingVocabWord,
+                    parentSetter: setSearchValue,
+                    userDataId: userData.words[activeReadingVocabWord.id],
+                    userData: userData,
+                    setUserData: setUserData,
+                    type: resultsViewMode,
+                    exactKanjiKana: exactKanjiKana,
+                    searchValue: searchArray,
+                    resultsInteractionMode: resultsInteractionMode,
+                    setTagListSearchValue: setTagListSearchValue,
+                    studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
+                    })        
+                })}
+
+            </div>
         </div>
-        <span className="text-4xl self-end">"</span>
-      </div> */}
-
-      {userDataEntries.length > 0 && tokens.length > 0 && readingVocab.length > 0 && readingVocab.map((activeReadingVocabWord) => {
-
-        return DisplayVocab({
-          vocab: activeReadingVocabWord,
-          parentSetter: setSearchValue,
-          userDataId: userData.words[activeReadingVocabWord.id],
-          userData: userData,
-          setUserData: setUserData,
-          type: resultsViewMode,
-          exactKanjiKana: exactKanjiKana,
-          searchValue: searchArray,
-          resultsInteractionMode: resultsInteractionMode,
-          setTagListSearchValue: setTagListSearchValue,
-          studyVocabAddUserDataEntry: studyVocabAddUserDataEntry
-        })        
-      })}
     </div>);
   }
