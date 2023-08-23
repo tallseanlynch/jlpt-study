@@ -94,6 +94,44 @@ export const searchByIds = (searchIdArray) => {
   })
 }
 
+export const getReadings = (searchQueryArray) => {
+  return fetch('http://localhost:9999/readings', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation: ', error);
+  })
+}
+
+export const saveReadings = (readings) => {
+  return fetch('http://localhost:9999/readings', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ ...readings})
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation: ', error);
+  })
+}
+
+
 export function removeCharacters(inputVal, characterArray) {
   for (let i = 0; i < characterArray.length; i++) {
     const regex = new RegExp(characterArray[i], "g");

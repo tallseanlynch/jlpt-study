@@ -1,21 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { DisplayVocab } from './DisplayVocab'
 import caret from '../images/caret.png'
-import { readings } from '../readings/readings'
-import { tokenize, searchExactTokens, searchExact } from '../js/utils'
+// import { readings } from '../readings/readings'
+// import { readings } from '../../data/json/readings.json'
+import { tokenize, searchExactTokens, getReadings, saveReadings } from '../js/utils'
 
-function parseAndRenderString(readingTokens, parentSetter, WordComponent, readingVocab) {
-    let elements = []
+const SentenceContainer = ({elements}) => {
+    return (<div>{elements}</div>)
+}
+
+window.getReadings = getReadings
+window.saveReadings = saveReadings
+
+function parseAndRenderString(readingTokens, parentSetter, WordComponent, readingVocab, selectedVocab) {
+    let elements = [[]]
+    let rowIndex = 0
     readingTokens.forEach(rt => {
-        // const currentScore = readingVocab && readingVocab.find(rv => rv.id === id) && readingVocab.length > 0 ? readingVocab.find(rv => rv.id === id).score : 10
-        const currentScore = 10
-        if(rt.pos !== '助詞' && rt.basic_form !== '*' && rt.pos !== "助動詞") {
-            elements.push(<WordComponent key={`rt.basic_form-${Math.random()}`} id={`rt.basic_form-${Math.random()}`} word={rt.surface_form} parentSetter={parentSetter} score={currentScore}/>);
+        // const currentScore = readingVocab && readingVocab.find(rv => rv.id === rt.id) && readingVocab.length > 0 ? readingVocab.find(rv => rv.id === rt.id).score : 10
+        if(rt.surface_form === '\n') {
+            elements.push([])
+            rowIndex++  
         } else {
-            elements.push(<span className="" key={`${rt.surface_form}-${rt.word_position}`}>{rt.surface_form}</span>)
+            const vocabSelected = selectedVocab.length > 0 
+            const foundSelectedVocab = selectedVocab.find(sv => {
+                return rt.word_id === sv.wordId && rt.word_position === sv.pos
+            })
+            const currentScore = vocabSelected && foundSelectedVocab ? -10 : 10
+
+            const isWithinReadingVocab = readingVocab.find(rv => {
+                return rt.word_id === rv.wordId && rt.word_position === rv.tokenPosition
+            })
+
+            if(rt.pos !== '助詞' && rt.basic_form !== '*' && rt.pos !== "助動詞" && rt.word_type !== 'UNKNOW' && isWithinReadingVocab) {
+                elements[rowIndex].push(<WordComponent wordId={rt.word_id} key={`rt.basic_form-${Math.random()}`} id={`rt.basic_form-${Math.random()}`} word={rt.surface_form} parentSetter={parentSetter} score={currentScore} pos={rt.word_position}/>);
+            } else {
+                elements[rowIndex].push(<span className="py-4 pr-1 inline-block" key={`${rt.surface_form}-${rt.word_position}`}>{rt.surface_form}</span>)
+            }    
         }
     })
-    return elements;
+    return elements.map((els, elsI) => <SentenceContainer elements={els} key={`sentence-${elsI}`} />);
   }
 
   export const Reading = ({
@@ -35,24 +58,49 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
     setTagListSearchValue,
     studyVocabAddUserDataEntry
   }) => {
+    const [readings, setReadings] = useState(null)
     const [activeReading, setActiveReading] = useState('街風') // where the reading comes from
     const [readingVocab, setReadingVocab] = useState([])
     const [tokens, setTokens] = useState([])
+    const [selectedVocab, setSelectedVocab] = useState([]) // [{wordId: 123456, pos: 123, score: 10}]
 
-    let getToken = () => {
+    const setSelectedVocabByWordIdPos = ({wordId, pos}) => {
+        let selectedVocabCopy = [ ...selectedVocab ]
+        const matchingSelectedVocab = selectedVocabCopy.filter(vocab => vocab.wordId === wordId && vocab.pos === pos)
+        if(matchingSelectedVocab.length === 0) {
+          selectedVocabCopy.push({wordId, pos, selectedTime: new Date().getTime()})
+        }
+        if(matchingSelectedVocab.length > 0) {
+          selectedVocabCopy = selectedVocabCopy.filter(vocab => vocab.wordId !== wordId && vocab.pos !== pos)
+        }
+        setSelectedVocab(selectedVocabCopy)
+      }  
+
+    let getToken = useCallback(() => {
         const asyncToken = async () => {
             let tokens = await tokenize(readings[activeReading].japanese)
-            console.log(tokens)
+            console.log({tokens})
             return tokens        
         }
         return asyncToken()
-    }
-
-    setTimeout(() => {document.querySelector('#reading-search-tag-input').value = activeReading}, 10)
+    }, [activeReading, readings])
 
     useEffect(() => {
-        getToken().then((t) => {setTokens(t)})
+        getReadings().then(r => {setReadings(r)})
     }, [])
+
+    // const updateReadingSearchInputTag = useCallback(() => {
+    //     document.querySelector('#reading-search-tag-input').value = activeReading
+    // }, [activeReading])
+
+    // useEffect(() => {
+    //     console.log({readings})
+    //     setTimeout(updateReadingSearchInputTag, document.querySelector('#reading-search-tag-input') === null ? 10 : 0) 
+    // }, [readings, updateReadingSearchInputTag])
+
+    useEffect(() => {
+        readings !== null && getToken().then((t) => {setTokens(t)})
+    }, [getToken, readings])
 
     useEffect(() => {
         const foundTokens = tokens.map(t => {
@@ -60,42 +108,35 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
                 word_position: t.word_position,
                 basic_form: t.basic_form,
                 surface_form: t.surface_form,
-                pos: t.pos
+                pos: t.pos,
+                word_id: t.word_id
             }
         })
 
         const filteredFoundTokens = foundTokens.filter(ffbf => ffbf.pos !== '助詞' && ffbf.pos !== '助動詞' && ffbf.basic_form !== '*')
 
-        // const foundBasicForms = filteredFoundTokens.map( t => t.basic_form)
         const foundBasicFormsToken = filteredFoundTokens.map( t => {
-            return {searchQuery: t.basic_form, tokenPosition: t.word_position}
+            return {
+                searchQuery: t.basic_form,
+                tokenPosition: t.word_position,
+                wordId: t.word_id
+            }
         })
 
         searchExactTokens(foundBasicFormsToken).then(searchResults => {
             if(searchResults !== null) {
-                const readingVocabFormat = searchResults.map(sr => { return { ...sr.vocab, tokenPosition: sr.tokenPosition }})
+                const readingVocabFormat = searchResults.map(sr => { return { ...sr.vocab, tokenPosition: sr.tokenPosition, wordId: sr.wordId }})
                 const sortedVocab = readingVocabFormat.sort((a, b) => {
                     return a.tokenPosition - b.tokenPosition
                 })
-                console.log('searchExactTokens', sortedVocab)
                 setReadingVocab(sortedVocab)
             }
         })
-
-        // console.log(foundTokens, filteredFoundTokens, foundBasicForms)
-
-        // searchExact(foundBasicForms).then(searchResults => {
-        //     if(searchResults !== null) {
-        //         console.log(searchResults)
-        //         setReadingVocab(searchResults)}
-        //     }
-        // )
-
     }, [tokens])
 
     useEffect(() => {
-      console.log(readingVocab)
-    }, [readingVocab])
+      console.log({readingVocab, activeReading, selectedVocab, readings})
+    }, [readingVocab, activeReading, selectedVocab, readings])
 
     const testVocabId = (score, id) => {
       let userDataCopy = { ...userData }
@@ -131,7 +172,7 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
     window.getRandomWords = getRandomWords
     window.activeVocabulary = activeVocabulary  
   
-    const Word = ({id, word, score = 10, parentSetter }) => {
+    const Word = ({id, word, score = 10, parentSetter, pos, wordId }) => {
       const activeClassTextVocabWord = 'hover:bg-zinc-500 bg-zinc-700 cursor-pointer text-white'
       const inactiveClassTextVocabWord = 'hover:border-zinc-500 border-zinc-200 border-2 cursor-pointer text-black'
   
@@ -142,8 +183,8 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
         onClick={
           () => {
             // console.log(readingVocab)
-            parentSetter({id})
-            console.log(id, word, score)
+            parentSetter({wordId, pos})
+            console.log(wordId, word, score)
           }
         }
       >{word}</button>
@@ -198,6 +239,7 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
                     autoComplete="off"
                     type="text"
                     onChange={onTagListInputChange}
+                    value={activeReading}
                 />
             </div>
 
@@ -239,36 +281,58 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
 
 
 
-    const setReadingVocabScoreById = ({id}) => {
-      const readingVocabCopy = [ ...readingVocab ]
-      const updatedVocab = readingVocabCopy.map(rvc => {
-        if(rvc.id === id) {
-          return { ...rvc, score: rvc.score * -1}
-        } else {
-          return rvc
-        }
-      })
-      setReadingVocab(updatedVocab)
-    }
+    // const setReadingVocabScoreById = ({id}) => {
+    //   const readingVocabCopy = [ ...readingVocab ]
+    //   const updatedVocab = readingVocabCopy.map(rvc => {
+    //     if(rvc.id === id) {
+    //       return { ...rvc, score: rvc.score * -1}
+    //     } else {
+    //       return rvc
+    //     }
+    //   })
+    //   setReadingVocab(updatedVocab)
+    // }
 
 
-    return (<div>
+    return (readings !== null ? <div>
       <ReadingToolbar parentSetter={() => {
         let readingVocabCopy = [ ...readingVocab ]
         setReadingVocab(readingVocabCopy)
-        console.log(readingVocab)
       }} />
         <div className="flex">
-            <div className="flex py-12 justify-center">
+            <div className="flex py-12 justify-center w-1/2">
                 <span className="text-4xl">「</span>
-                <pre className="px-8 font-thin whitespace-pre">
-                {tokens && parseAndRenderString(tokens, setReadingVocabScoreById, Word, readingVocab)}
-                </pre>
+                <div className="font-thin" style={{}}>
+                    {tokens && parseAndRenderString(tokens, setSelectedVocabByWordIdPos, Word, readingVocab, selectedVocab)}
+                </div>
                 <span className="text-4xl self-end">」</span>
             </div>
 
-            <div className="py-12">
-                {userDataEntries.length > 0 && tokens.length > 0 && readingVocab.length > 0 && readingVocab.map((activeReadingVocabWord) => {
+            <div className="py-12 w-1/2">
+                {userDataEntries.length > 0 && tokens.length > 0 && readingVocab.length > 0 && readingVocab
+                .filter((f) => {
+                    let matchingSelectedVocab = false
+                    selectedVocab.forEach(sv => {
+                        if(sv.wordId === f.wordId && sv.pos === f.tokenPosition) {
+                            matchingSelectedVocab = true
+                        }
+                    })
+                    return matchingSelectedVocab
+                })
+                .map(m => {
+                    let matchingSelectedVocab
+                    selectedVocab.forEach(sv => {
+                        if(sv.wordId === m.wordId && sv.pos === m.tokenPosition) {
+                            matchingSelectedVocab = sv
+                        }
+                    })
+
+                    return { ...m, selectedTime: matchingSelectedVocab.selectedTime}
+                })
+                .sort((a, b) => {
+                    return b.selectedTime - a.selectedTime
+                })
+                .map((activeReadingVocabWord) => {
                     return DisplayVocab({
                     vocab: activeReadingVocabWord,
                     parentSetter: setSearchValue,
@@ -286,5 +350,5 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
 
             </div>
         </div>
-    </div>);
+    </div> : '');
   }

@@ -63,5 +63,10 @@ You better listen if you don't wanna mess it with my squad
 調子に乗るなよクソガキ
 You better listen if you don't wanna mess it with my squad`,
         addedDate: 1692212852717
+    },
+    '風': {
+        japanese: 
+`こちら大阪 mess it with my squad`,
+        addedDate: 1692212852717
     }
 }

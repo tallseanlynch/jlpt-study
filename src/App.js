@@ -131,13 +131,20 @@ window.searchExact = searchExact
     setUserData(userDataCopy)    
   }
 
+  function replaceWithCommaSpace(inputStr) {
+    const pattern = /(\s|,|,\s|、)+/g;
+    return inputStr.replace(pattern, ', ');
+  }
+
   const searchFilter = useCallback((e) => {
     async function handleSearchFilter() {
       if (String(e.target.value).length === 0) {
         return
       }
+    
+      const formattedString = replaceWithCommaSpace(e.target.value)
 
-      const splitCommaString = String(e.target.value).split(', ').map(ss => ss.replace(',', '')).map(ss => ss.replace(' ', ''))
+      const splitCommaString = String(formattedString).split(', ').map(ss => ss.replace(',', '')).map(ss => ss.replace(' ', ''))
       const isSplitCommaString = splitCommaString.length > 1
 
       const searchArray = isSplitCommaString ? splitCommaString : [e.target.value]
@@ -249,7 +256,7 @@ window.searchExact = searchExact
     const fetchSetUserDataEntries = async () => {
       if (userDataEntries === null) {
         const searchByIdsResults = await searchByIds(Object.keys(userData.words));
-        console.log(searchByIdsResults, userData)
+        console.log({searchByIdsResults, userData})
         setUserDataEntries(searchByIdsResults)
       }
     }
@@ -609,7 +616,7 @@ window.searchExact = searchExact
               >Exact</button>
             </div>
             {
-              userData && activeVocabulary
+              userData && appMode !== 'reading' && isPlaying === false && activeVocabulary
                 .slice(0, 100)
                 .map(ud => {
                   let kanjis = ud.kanji.length > 0 ? ud.kanji.map(kj => kj.text) : [];

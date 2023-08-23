@@ -5,6 +5,7 @@ const port = 9999;
 const cors = require('cors');
 const jsonDict = require('./jmdict-eng-3.5.0.json');
 const kuromoji = require("kuromoji");
+const readings = require('./readings.json');
 // const r = require('../../node_modules/kuromoji/dict')
 
 let appTokenizer = null
@@ -31,7 +32,7 @@ async function copyFile(srcPath, destPath, jsonData) {
     await fs.copyFile(srcPath, destPath);
     console.log(`File copied from ${srcPath} to ${destPath}`);
 
-    await fs.writeFile('db.json', JSON.stringify(jsonData, null, 2));
+    await fs.writeFile(`${srcPath}`, JSON.stringify(jsonData, null, 2));
     console.log('JSON data saved to file.');
   } catch (err) {
     console.error('Error during file operations:', err);
@@ -53,6 +54,27 @@ app.post('/tokenize', (req, res) => {
     console.log(searchResults)
     res.status(200).send(JSON.stringify(searchResults));
   }
+});
+
+app.get('/readings', (req, res) => {
+  res.status(200).send(JSON.stringify(readings));
+});
+
+
+app.post('/readings', (req, res) => {
+  const jsonData = req.body;
+  const sourcePath = './readings.json';
+  const destinationPath = `./backups/readings--${formatDate(new Date())}.json`;
+
+  copyFile(sourcePath, destinationPath, jsonData)
+    .then(() => {
+      console.log('readings.json copied and updated successfully');
+      res.status(200).send('JSON data saved successfully.');
+    })
+    .catch((err) => {
+      console.error('Failed to copy the file: readings.json', err);
+      res.status(500).send('Failed to save JSON data.');
+    });
 });
 
 app.post('/save-json', (req, res) => {
