@@ -63,6 +63,13 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
     const [readingVocab, setReadingVocab] = useState([])
     const [tokens, setTokens] = useState([])
     const [selectedVocab, setSelectedVocab] = useState([]) // [{wordId: 123456, pos: 123, score: 10}]
+    const [showAll, setShowAll] = useState(false)
+    const [editingReading, setEditingReading] = useState(false)
+
+    // "街風": {
+    //   "japanese": "こちら大阪 生野区朝鮮人部落\nﾌﾟﾙﾙﾙ 電話がひっきりなしになりまくる\nそろそろ仕事だ\nﾌﾟﾙﾙ プルッてる場合じゃないよまったく\nくれるだけくれよ ありのままの\n嫌味ありがたく いただけるかも今の気分\nなんだか気は張ってる 四六時中\nいつ何時でも己の敵は自分\nクソッタレ 気にせん全然\nI ain't the type of brother for you to start testin'\nていうかこんなとこいないよ先生\n今夜もヤサに篭もっても 燃やす先生\nデンジャー 危険だ黄色い信号\nより良い結果 のためこらえて辛抱\n俺のハイライフ関係ない金土\nほんまにぶら下がってんのチンポ？\n尻尾 見せたら潰される きっと\nそんなしっとりしたパンチライン じゃ\n俺の心 響かせん ちっとも\nもう面倒 妬みと嫉妬\n疲れ 困る 結構いいところ\nクリティカルヒット お前にピンポイント\nお前よりいってる 結構いいところ\nお前 今も探す 拠り所\n離れなかった薬の売買\nヤク中生活とも これでバイバイ\n我忘れ街を徘徊\nでもぶら下がってぶんどった\nこのライフスタイル\n石ころ蹴り飛ばし歩いた\nこの道端にツバ吐き 肩で風を切る\n身内は身内でよそはよそ\n福は内で鬼は外 でも世間は鬼\n限られた仲間たちと生きる\nでもくたばる時ぐらい一人で死ぬ\n調子に乗るなよクソガキ\nYou better listen if you don't wanna mess it with my squad\n肌をさす風が吹き抜ける街道\n自分は自分でやれるようにと\nコーナーの売人 商売繁盛\nランナーは毎日 朝昼晩も\n欲を満たした自分のために\nブレーキを効かせて 欲と駆け引き\n幸せのために 不幸せを糧に\n手のひら返しが 道中のバネに\n朝まで意識を高めた結果\nまるでヒップホップの関係ができた\nあのとき正義を貫いた結果\nまるでヒップホップみたいな環境ができた\n外には一つもスキを見せるなよ\n身内は身内で よそはよそ\nここまでやってきたことは楽勝\n気の緩みは許されずに レディゴー\n石ころ蹴り飛ばし歩いた\nこの道端にツバ吐き 肩で風を切る\n身内は身内でよそはよそ\n福は内で鬼は外 でも世間は鬼\n限られた仲間たちと生きる\nでもくたばる時ぐらい一人で死ぬ\n調子に乗るなよクソガキ\nYou better listen if you don't wanna mess it with my squad",
+    //   "addedDate": 1692212852717
+    // }
 
     const setSelectedVocabByWordIdPos = ({wordId, pos}) => {
         let selectedVocabCopy = [ ...selectedVocab ]
@@ -83,20 +90,18 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
             return tokens        
         }
         return asyncToken()
+        
     }, [activeReading, readings])
 
-    useEffect(() => {
-        getReadings().then(r => {setReadings(r)})
-    }, [])
-
-    // const updateReadingSearchInputTag = useCallback(() => {
-    //     document.querySelector('#reading-search-tag-input').value = activeReading
-    // }, [activeReading])
-
     // useEffect(() => {
-    //     console.log({readings})
-    //     setTimeout(updateReadingSearchInputTag, document.querySelector('#reading-search-tag-input') === null ? 10 : 0) 
-    // }, [readings, updateReadingSearchInputTag])
+    //     getReadings().then(r => {setReadings(r)})
+    // }, [])
+
+    useEffect(() => {
+      fetch('http://localhost:8080/readings.json', { cache: "no-store" })
+        .then((res) => res.json())
+        .then((jsonResponseData) => setReadings(jsonResponseData))
+    }, [])  
 
     useEffect(() => {
         readings !== null && getToken().then((t) => {setTokens(t)})
@@ -138,14 +143,14 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
       console.log({readingVocab, activeReading, selectedVocab, readings})
     }, [readingVocab, activeReading, selectedVocab, readings])
 
-    const testVocabId = (score, id) => {
-      let userDataCopy = { ...userData }
-      if(userData.words[id].events !== undefined){
-        userDataCopy.words[id].events.push(createScore(score))
-      } 
-      saveUserData(userDataCopy)
-      setUserData(userDataCopy)
-    }
+    // const testVocabId = (score, id) => {
+    //   let userDataCopy = { ...userData }
+    //   if(userData.words[id].events !== undefined){
+    //     userDataCopy.words[id].events.push(createScore(score))
+    //   } 
+    //   saveUserData(userDataCopy)
+    //   setUserData(userDataCopy)
+    // }
   
     const getRandomWords = (numberOfWords = 50) => {
       const vocabCSV = userData && activeVocabulary.map(ud => {
@@ -191,8 +196,21 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
       )
     }
   
-    const ReadingToolbar = ({parentSetter}) => {
+    const ReadingToolbar = ({readings, setReadings}) => {
         const [listSelectorOpen, setListSelectorOpen] = useState(false);
+        const [newReadingName, setNewReadingName] = useState('')
+        const [newReadingJapanese, setNewReadingJapanese] = useState('')
+
+        const updateReadings = useCallback(() => {
+          let readingsCopy = { ...readings }
+          readingsCopy[newReadingName] = {
+            japanese: newReadingJapanese,
+            addedDate: new Date().getTime()
+          }
+          console.log(readingsCopy)
+          setReadings(readingsCopy)
+          saveReadings(readingsCopy)
+        }, [readings, newReadingName, newReadingJapanese, setReadings])      
 
         const onTagListInputChange = (e) => {
             e.preventDefault()
@@ -221,10 +239,11 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
                     return (
                         <div className={`p-2 reading-selector-option-${index} hover:text-zinc-700 hover:bg-zinc-100 cursor-pointer rounded-lg text-sm`} key={index} onClick={() => {
                         setListSelectorOpen(!listSelectorOpen)
+                        setReadingVocab([])
                         setActiveReading(reading)
-                        setTimeout(() => {
-                            document.querySelector('#reading-search-tag-input').value = reading
-                        }, 1)
+                        // setTimeout(() => {
+                        //     document.querySelector('#reading-search-tag-input').value = reading
+                        // }, 1)
                         }}>
                         {reading}
                         </div>
@@ -248,15 +267,24 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
                 className="border-2 rounded-lg p-2 pl-4 text-sm mr-2"
                 placeholder={'Type name here...'}
                 type="text"
-                onChange={() => {console.log('Paste reading')}}
+                // value={newReadingName}
+                onChange={(e) => {
+                  // console.log('Reading name')
+                  setNewReadingName(e.target.value)
+                }}
                 autoComplete="off"
             />
-            <input
+            <textarea
                 id="reading-input"
+                style={{maxHeight: '40px'}}
                 className="border-2 rounded-lg p-2 pl-4 text-sm mr-2"
                 placeholder={'Paste Reading here...'}
                 type="text"
-                onChange={() => {console.log('Paste reading')}}
+                // value={newReadingJapanese}
+                onChange={(e) => {
+                  // console.log('Japanese reading')
+                  setNewReadingJapanese(e.target.value)
+                }}
                 autoComplete="off"
             />
             <button
@@ -264,17 +292,33 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
               className={`${inactiveClass} px-4 py-2 mr-2 text-sm rounded-lg inline-block`}
               onClick={() => {
                 console.log('save reading')
+                updateReadings()
               }}
-            >Save Reading</button>
+            >Save</button>
+            {/* <button
+              style={{ transition: 'all 300ms'}}
+              className={`${editingReading ? activeClass : inactiveClass} px-4 py-2 mr-2 text-sm rounded-lg inline-block`}
+              onClick={() => {
+                console.log('edit reading')
+                setEditingReading(!editingReading)
+              }}
+            >Edit</button> */}
+            <button
+              style={{ transition: 'all 300ms'}}
+              className={`${showAll ? activeClass : inactiveClass} px-4 py-2 mr-2 text-sm rounded-lg inline-block`}
+              onClick={() => {
+                console.log('show all')
+                setShowAll(!showAll)
+              }}
+            >Show All</button>
             <button
               style={{ transition: 'all 300ms'}}
               className={`${inactiveClass} px-4 py-2 mr-2 text-sm rounded-lg inline-block`}
               onClick={() => {
                 console.log('score reading')
-                parentSetter()
+                // parentSetter()
               }}
             >Confirm Scores</button>
-
         </div>
       )
     }
@@ -295,10 +339,7 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
 
 
     return (readings !== null ? <div>
-      <ReadingToolbar parentSetter={() => {
-        let readingVocabCopy = [ ...readingVocab ]
-        setReadingVocab(readingVocabCopy)
-      }} />
+      <ReadingToolbar readings={readings} setReadings={setReadings} />
         <div className="flex">
             <div className="flex py-12 justify-center w-1/2">
                 <span className="text-4xl">「</span>
@@ -311,6 +352,10 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
             <div className="py-12 w-1/2">
                 {userDataEntries.length > 0 && tokens.length > 0 && readingVocab.length > 0 && readingVocab
                 .filter((f) => {
+                    if(showAll === true) {
+                      return f
+                    }
+
                     let matchingSelectedVocab = false
                     selectedVocab.forEach(sv => {
                         if(sv.wordId === f.wordId && sv.pos === f.tokenPosition) {
@@ -320,6 +365,10 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
                     return matchingSelectedVocab
                 })
                 .map(m => {
+                  if(showAll === true) {
+                    return m
+                  }
+
                     let matchingSelectedVocab
                     selectedVocab.forEach(sv => {
                         if(sv.wordId === m.wordId && sv.pos === m.tokenPosition) {
@@ -327,9 +376,13 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
                         }
                     })
 
-                    return { ...m, selectedTime: matchingSelectedVocab.selectedTime}
+                    return { ...m, selectedTime: matchingSelectedVocab.selectedTime ? matchingSelectedVocab.selectedTime : 0}
                 })
                 .sort((a, b) => {
+                  if(showAll === true) {
+                    return 0
+                  }
+
                     return b.selectedTime - a.selectedTime
                 })
                 .map((activeReadingVocabWord) => {

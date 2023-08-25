@@ -5,7 +5,7 @@ const port = 9999;
 const cors = require('cors');
 const jsonDict = require('./jmdict-eng-3.5.0.json');
 const kuromoji = require("kuromoji");
-const readings = require('./readings.json');
+// const readings = require('./readings.json');
 // const r = require('../../node_modules/kuromoji/dict')
 
 let appTokenizer = null
@@ -57,9 +57,18 @@ app.post('/tokenize', (req, res) => {
 });
 
 app.get('/readings', (req, res) => {
-  res.status(200).send(JSON.stringify(readings));
+  const jsonFilePath = './readings.json';
+  
+  fs.readFile(jsonFilePath, 'utf8', (err, readings) => {
+    if (err) {
+      console.error('Error reading the file:', err);
+      res.status(500).send('Error reading the file');
+      return;
+    }
+    console.log(readings)
+    res.status(200).send(readings);
+  });
 });
-
 
 app.post('/readings', (req, res) => {
   const jsonData = req.body;
@@ -69,11 +78,11 @@ app.post('/readings', (req, res) => {
   copyFile(sourcePath, destinationPath, jsonData)
     .then(() => {
       console.log('readings.json copied and updated successfully');
-      res.status(200).send('JSON data saved successfully.');
+      res.status(200).send(JSON.stringify({msg: 'JSON data saved successfully.'}));
     })
     .catch((err) => {
       console.error('Failed to copy the file: readings.json', err);
-      res.status(500).send('Failed to save JSON data.');
+      res.status(500).send(JSON.stringify({msg: 'Failed to save JSON data.'}));
     });
 });
 

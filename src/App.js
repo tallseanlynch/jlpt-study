@@ -290,7 +290,6 @@ window.searchExact = searchExact
     }
   })
 
-
   // handles the users history and vocab on the left side of the application
   useEffect(() => {
     async function handleUserData() {
@@ -448,14 +447,14 @@ window.searchExact = searchExact
               }
               }
             >Exact Search</button>
-            <button
+            {/* <button
               style={{ transition: 'all 300ms', width: '150px' }}
               className={`${exactKanjiKana ? activeClass : inactiveClass} text-sm px-4 rounded-lg ml-2 inline-block`}
               onClick={() => {
                 setExactKanjiKana(!exactKanjiKana)
               }
               }
-            >Single Word</button>
+            >Single Word</button> */}
           </span>
         </div>
         <div className="flex w-full">
