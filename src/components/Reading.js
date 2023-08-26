@@ -3,7 +3,7 @@ import { DisplayVocab } from './DisplayVocab'
 import caret from '../images/caret.png'
 // import { readings } from '../readings/readings'
 // import { readings } from '../../data/json/readings.json'
-import { tokenize, searchExactTokens, getReadings, saveReadings } from '../js/utils'
+import { tokenize, searchExactTokens, getReadings, saveReadings, saveLists } from '../js/utils'
 
 const SentenceContainer = ({elements}) => {
     return (<div>{elements}</div>)
@@ -56,7 +56,9 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
     searchArray,
     resultsInteractionMode,
     setTagListSearchValue,
-    studyVocabAddUserDataEntry
+    studyVocabAddUserDataEntry,
+    lists,
+    listsSetter
   }) => {
     const [readings, setReadings] = useState(null)
     const [activeReading, setActiveReading] = useState('街風') // where the reading comes from
@@ -64,7 +66,6 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
     const [tokens, setTokens] = useState([])
     const [selectedVocab, setSelectedVocab] = useState([]) // [{wordId: 123456, pos: 123, score: 10}]
     const [showAll, setShowAll] = useState(false)
-    const [editingReading, setEditingReading] = useState(false)
 
     // "街風": {
     //   "japanese": "こちら大阪 生野区朝鮮人部落\nﾌﾟﾙﾙﾙ 電話がひっきりなしになりまくる\nそろそろ仕事だ\nﾌﾟﾙﾙ プルッてる場合じゃないよまったく\nくれるだけくれよ ありのままの\n嫌味ありがたく いただけるかも今の気分\nなんだか気は張ってる 四六時中\nいつ何時でも己の敵は自分\nクソッタレ 気にせん全然\nI ain't the type of brother for you to start testin'\nていうかこんなとこいないよ先生\n今夜もヤサに篭もっても 燃やす先生\nデンジャー 危険だ黄色い信号\nより良い結果 のためこらえて辛抱\n俺のハイライフ関係ない金土\nほんまにぶら下がってんのチンポ？\n尻尾 見せたら潰される きっと\nそんなしっとりしたパンチライン じゃ\n俺の心 響かせん ちっとも\nもう面倒 妬みと嫉妬\n疲れ 困る 結構いいところ\nクリティカルヒット お前にピンポイント\nお前よりいってる 結構いいところ\nお前 今も探す 拠り所\n離れなかった薬の売買\nヤク中生活とも これでバイバイ\n我忘れ街を徘徊\nでもぶら下がってぶんどった\nこのライフスタイル\n石ころ蹴り飛ばし歩いた\nこの道端にツバ吐き 肩で風を切る\n身内は身内でよそはよそ\n福は内で鬼は外 でも世間は鬼\n限られた仲間たちと生きる\nでもくたばる時ぐらい一人で死ぬ\n調子に乗るなよクソガキ\nYou better listen if you don't wanna mess it with my squad\n肌をさす風が吹き抜ける街道\n自分は自分でやれるようにと\nコーナーの売人 商売繁盛\nランナーは毎日 朝昼晩も\n欲を満たした自分のために\nブレーキを効かせて 欲と駆け引き\n幸せのために 不幸せを糧に\n手のひら返しが 道中のバネに\n朝まで意識を高めた結果\nまるでヒップホップの関係ができた\nあのとき正義を貫いた結果\nまるでヒップホップみたいな環境ができた\n外には一つもスキを見せるなよ\n身内は身内で よそはよそ\nここまでやってきたことは楽勝\n気の緩みは許されずに レディゴー\n石ころ蹴り飛ばし歩いた\nこの道端にツバ吐き 肩で風を切る\n身内は身内でよそはよそ\n福は内で鬼は外 でも世間は鬼\n限られた仲間たちと生きる\nでもくたばる時ぐらい一人で死ぬ\n調子に乗るなよクソガキ\nYou better listen if you don't wanna mess it with my squad",
@@ -141,7 +142,36 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
 
     useEffect(() => {
       console.log({readingVocab, activeReading, selectedVocab, readings})
-    }, [readingVocab, activeReading, selectedVocab, readings])
+      let ids = []
+      if(readingVocab.length > 0) {
+        let saveReadingVocab = readingVocab.map(rv => {
+          return {
+            id: rv.id,
+            tokenPosition: rv.tokenPosition,
+            wordId: rv.wordId
+          }
+        })
+        const noDupesSaveReadingVocab = saveReadingVocab.filter(srv => {
+          if(ids.indexOf(srv.id) === -1) {
+            ids.push(srv.id)
+            return true
+          } else { return false }
+        })
+
+        const noDupesSaveReadingVocabStudying = noDupesSaveReadingVocab.filter(f => {
+          return userData.words[f.id] !== undefined
+        })
+
+        
+        console.log({
+          readingVocab,
+          saveReadingVocab,
+          noDupesSaveReadingVocab,
+          noDupesSaveReadingVocabStudying,
+          userData
+        })
+      }
+    }, [readingVocab, activeReading, selectedVocab, readings, userData])
 
     // const testVocabId = (score, id) => {
     //   let userDataCopy = { ...userData }
@@ -202,6 +232,44 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
         const [newReadingJapanese, setNewReadingJapanese] = useState('')
 
         const updateReadings = useCallback(() => {
+          console.log({readingVocab, activeReading, selectedVocab, readings})
+          let ids = []
+          if(readingVocab.length > 0) {
+            let saveReadingVocab = readingVocab.map(rv => {
+              return {
+                id: rv.id,
+                tokenPosition: rv.tokenPosition,
+                wordId: rv.wordId
+              }
+            })
+            const noDupesSaveReadingVocab = saveReadingVocab.filter(srv => {
+              if(ids.indexOf(srv.id) === -1) {
+                ids.push(srv.id)
+                return true
+              } else { return false }
+            })
+    
+            const noDupesSaveReadingVocabStudying = noDupesSaveReadingVocab.filter(f => {
+              return userData.words[f.id] !== undefined
+            })
+
+            const newLists = { ...lists, [activeReading]: {vocab: noDupesSaveReadingVocabStudying, addedDate: new Date().getTime() }}
+            
+            console.log({
+              newLists,
+              readingVocab,
+              saveReadingVocab,
+              noDupesSaveReadingVocab,
+              noDupesSaveReadingVocabStudying,
+              userData
+            })
+
+            listsSetter(newLists)
+            saveLists(newLists)
+
+          }
+    
+
           let readingsCopy = { ...readings }
           readingsCopy[newReadingName] = {
             japanese: newReadingJapanese,
@@ -311,14 +379,14 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
                 setShowAll(!showAll)
               }}
             >Show All</button>
-            <button
+            {/* <button
               style={{ transition: 'all 300ms'}}
               className={`${inactiveClass} px-4 py-2 mr-2 text-sm rounded-lg inline-block`}
               onClick={() => {
                 console.log('score reading')
                 // parentSetter()
               }}
-            >Confirm Scores</button>
+            >Confirm Scores</button> */}
         </div>
       )
     }

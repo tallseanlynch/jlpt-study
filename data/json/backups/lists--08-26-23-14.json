@@ -1,0 +1,1806 @@
+{
+  "街風": {
+    "vocab": [
+      {
+        "id": "1004500",
+        "tokenPosition": 1,
+        "wordId": 43310
+      },
+      {
+        "id": "2078800",
+        "tokenPosition": 4,
+        "wordId": 3315570
+      },
+      {
+        "id": "1244080",
+        "tokenPosition": 9,
+        "wordId": 162090
+      },
+      {
+        "id": "1428420",
+        "tokenPosition": 10,
+        "wordId": 1886770
+      },
+      {
+        "id": "1366410",
+        "tokenPosition": 12,
+        "wordId": 81310
+      },
+      {
+        "id": "1366420",
+        "tokenPosition": 12,
+        "wordId": 81310
+      },
+      {
+        "id": "1580640",
+        "tokenPosition": 12,
+        "wordId": 81310
+      },
+      {
+        "id": "2149890",
+        "tokenPosition": 12,
+        "wordId": 81310
+      },
+      {
+        "id": "1499550",
+        "tokenPosition": 13,
+        "wordId": 1971820
+      },
+      {
+        "id": "1443840",
+        "tokenPosition": 22,
+        "wordId": 343100
+      },
+      {
+        "id": "1375610",
+        "tokenPosition": 32,
+        "wordId": 352830
+      },
+      {
+        "id": "1532910",
+        "tokenPosition": 32,
+        "wordId": 352830
+      },
+      {
+        "id": "1611000",
+        "tokenPosition": 32,
+        "wordId": 352830
+      },
+      {
+        "id": "2138260",
+        "tokenPosition": 32,
+        "wordId": 352830
+      },
+      {
+        "id": "1257800",
+        "tokenPosition": 34,
+        "wordId": 3691570
+      },
+      {
+        "id": "1345605",
+        "tokenPosition": 38,
+        "wordId": 107380
+      },
+      {
+        "id": "1304970",
+        "tokenPosition": 42,
+        "wordId": 493630
+      },
+      {
+        "id": "1350860",
+        "tokenPosition": 54,
+        "wordId": 1114640
+      },
+      {
+        "id": "2831062",
+        "tokenPosition": 54,
+        "wordId": 1114640
+      },
+      {
+        "id": "1355810",
+        "tokenPosition": 56,
+        "wordId": 35540
+      },
+      {
+        "id": "2017460",
+        "tokenPosition": 56,
+        "wordId": 35540
+      },
+      {
+        "id": "1394800",
+        "tokenPosition": 63,
+        "wordId": 10830
+      },
+      {
+        "id": "1269130",
+        "tokenPosition": 68,
+        "wordId": 3539470
+      },
+      {
+        "id": "1514960",
+        "tokenPosition": 68,
+        "wordId": 3539470
+      },
+      {
+        "id": "1541000",
+        "tokenPosition": 77,
+        "wordId": 108290
+      },
+      {
+        "id": "1587660",
+        "tokenPosition": 84,
+        "wordId": 29740
+      },
+      {
+        "id": "1541560",
+        "tokenPosition": 86,
+        "wordId": 1873200
+      },
+      {
+        "id": "1628260",
+        "tokenPosition": 92,
+        "wordId": 3582710
+      },
+      {
+        "id": "1288850",
+        "tokenPosition": 99,
+        "wordId": 37600
+      },
+      {
+        "id": "1288860",
+        "tokenPosition": 99,
+        "wordId": 37600
+      },
+      {
+        "id": "1222590",
+        "tokenPosition": 101,
+        "wordId": 2394210
+      },
+      {
+        "id": "1188350",
+        "tokenPosition": 104,
+        "wordId": 109660
+      },
+      {
+        "id": "1221520",
+        "tokenPosition": 108,
+        "wordId": 194660
+      },
+      {
+        "id": "2006580",
+        "tokenPosition": 108,
+        "wordId": 194660
+      },
+      {
+        "id": "2233680",
+        "tokenPosition": 108,
+        "wordId": 194660
+      },
+      {
+        "id": "2233690",
+        "tokenPosition": 108,
+        "wordId": 194660
+      },
+      {
+        "id": "1427900",
+        "tokenPosition": 110,
+        "wordId": 1460360
+      },
+      {
+        "id": "2250310",
+        "tokenPosition": 110,
+        "wordId": 1460360
+      },
+      {
+        "id": "1307420",
+        "tokenPosition": 115,
+        "wordId": 2088460
+      },
+      {
+        "id": "1188760",
+        "tokenPosition": 120,
+        "wordId": 43920
+      },
+      {
+        "id": "1268060",
+        "tokenPosition": 120,
+        "wordId": 43920
+      },
+      {
+        "id": "2843147",
+        "tokenPosition": 120,
+        "wordId": 43920
+      },
+      {
+        "id": "1577100",
+        "tokenPosition": 122,
+        "wordId": 51620
+      },
+      {
+        "id": "2846738",
+        "tokenPosition": 122,
+        "wordId": 51620
+      },
+      {
+        "id": "1315840",
+        "tokenPosition": 123,
+        "wordId": 159110
+      },
+      {
+        "id": "2020680",
+        "tokenPosition": 123,
+        "wordId": 159110
+      },
+      {
+        "id": "2273940",
+        "tokenPosition": 123,
+        "wordId": 159110
+      },
+      {
+        "id": "1266890",
+        "tokenPosition": 126,
+        "wordId": 43510
+      },
+      {
+        "id": "1576870",
+        "tokenPosition": 126,
+        "wordId": 43510
+      },
+      {
+        "id": "1578530",
+        "tokenPosition": 126,
+        "wordId": 43510
+      },
+      {
+        "id": "1631650",
+        "tokenPosition": 126,
+        "wordId": 43510
+      },
+      {
+        "id": "2080360",
+        "tokenPosition": 126,
+        "wordId": 43510
+      },
+      {
+        "id": "2084820",
+        "tokenPosition": 126,
+        "wordId": 43510
+      },
+      {
+        "id": "2174450",
+        "tokenPosition": 126,
+        "wordId": 43510
+      },
+      {
+        "id": "2735810",
+        "tokenPosition": 126,
+        "wordId": 43510
+      },
+      {
+        "id": "1577915",
+        "tokenPosition": 128,
+        "wordId": 2119170
+      },
+      {
+        "id": "1582000",
+        "tokenPosition": 128,
+        "wordId": 2119170
+      },
+      {
+        "id": "1318610",
+        "tokenPosition": 130,
+        "wordId": 1529590
+      },
+      {
+        "id": "1157170",
+        "tokenPosition": 141,
+        "wordId": 3011800
+      },
+      {
+        "id": "1298670",
+        "tokenPosition": 141,
+        "wordId": 3011800
+      },
+      {
+        "id": "1567440",
+        "tokenPosition": 141,
+        "wordId": 3011800
+      },
+      {
+        "id": "1581900",
+        "tokenPosition": 141,
+        "wordId": 3011800
+      },
+      {
+        "id": "1595910",
+        "tokenPosition": 141,
+        "wordId": 3011800
+      },
+      {
+        "id": "1395620",
+        "tokenPosition": 143,
+        "wordId": 243880
+      },
+      {
+        "id": "1197050",
+        "tokenPosition": 202,
+        "wordId": 1714060
+      },
+      {
+        "id": "1204860",
+        "tokenPosition": 202,
+        "wordId": 1714060
+      },
+      {
+        "id": "1206100",
+        "tokenPosition": 202,
+        "wordId": 1714060
+      },
+      {
+        "id": "1226630",
+        "tokenPosition": 202,
+        "wordId": 1714060
+      },
+      {
+        "id": "1343950",
+        "tokenPosition": 202,
+        "wordId": 1714060
+      },
+      {
+        "id": "1583460",
+        "tokenPosition": 202,
+        "wordId": 1714060
+      },
+      {
+        "id": "1381270",
+        "tokenPosition": 207,
+        "wordId": 1912520
+      },
+      {
+        "id": "1469890",
+        "tokenPosition": 207,
+        "wordId": 1912520
+      },
+      {
+        "id": "1558670",
+        "tokenPosition": 207,
+        "wordId": 1912520
+      },
+      {
+        "id": "2742070",
+        "tokenPosition": 207,
+        "wordId": 1912520
+      },
+      {
+        "id": "1421210",
+        "tokenPosition": 209,
+        "wordId": 1799070
+      },
+      {
+        "id": "1518450",
+        "tokenPosition": 209,
+        "wordId": 1799070
+      },
+      {
+        "id": "1529520",
+        "tokenPosition": 209,
+        "wordId": 1799070
+      },
+      {
+        "id": "2098290",
+        "tokenPosition": 209,
+        "wordId": 1799070
+      },
+      {
+        "id": "2257550",
+        "tokenPosition": 209,
+        "wordId": 1799070
+      },
+      {
+        "id": "1387990",
+        "tokenPosition": 212,
+        "wordId": 2298340
+      },
+      {
+        "id": "2727400",
+        "tokenPosition": 212,
+        "wordId": 2298340
+      },
+      {
+        "id": "2841735",
+        "tokenPosition": 212,
+        "wordId": 2298340
+      },
+      {
+        "id": "1289520",
+        "tokenPosition": 215,
+        "wordId": 126290
+      },
+      {
+        "id": "1593430",
+        "tokenPosition": 221,
+        "wordId": 3569900
+      },
+      {
+        "id": "1582900",
+        "tokenPosition": 227,
+        "wordId": 3835550
+      },
+      {
+        "id": "1218560",
+        "tokenPosition": 239,
+        "wordId": 250080
+      },
+      {
+        "id": "1182030",
+        "tokenPosition": 242,
+        "wordId": 2238480
+      },
+      {
+        "id": "1359240",
+        "tokenPosition": 245,
+        "wordId": 465620
+      },
+      {
+        "id": "1013190",
+        "tokenPosition": 248,
+        "wordId": 105200
+      },
+      {
+        "id": "1605820",
+        "tokenPosition": 250,
+        "wordId": 2131070
+      },
+      {
+        "id": "1254690",
+        "tokenPosition": 252,
+        "wordId": 36170
+      },
+      {
+        "id": "1157080",
+        "tokenPosition": 256,
+        "wordId": 62870
+      },
+      {
+        "id": "2615440",
+        "tokenPosition": 256,
+        "wordId": 62870
+      },
+      {
+        "id": "2827352",
+        "tokenPosition": 258,
+        "wordId": 3714180
+      },
+      {
+        "id": "1365930",
+        "tokenPosition": 262,
+        "wordId": 693580
+      },
+      {
+        "id": "1215810",
+        "tokenPosition": 272,
+        "wordId": 77960
+      },
+      {
+        "id": "1242590",
+        "tokenPosition": 276,
+        "wordId": 1779360
+      },
+      {
+        "id": "1242600",
+        "tokenPosition": 276,
+        "wordId": 1779360
+      },
+      {
+        "id": "2839304",
+        "tokenPosition": 276,
+        "wordId": 1779360
+      },
+      {
+        "id": "1445270",
+        "tokenPosition": 277,
+        "wordId": 89620
+      },
+      {
+        "id": "2248580",
+        "tokenPosition": 277,
+        "wordId": 89620
+      },
+      {
+        "id": "2423330",
+        "tokenPosition": 277,
+        "wordId": 89620
+      },
+      {
+        "id": "2842571",
+        "tokenPosition": 277,
+        "wordId": 89620
+      },
+      {
+        "id": "2001000",
+        "tokenPosition": 279,
+        "wordId": 1127090
+      },
+      {
+        "id": "1011240",
+        "tokenPosition": 283,
+        "wordId": 3788010
+      },
+      {
+        "id": "1077380",
+        "tokenPosition": 291,
+        "wordId": 2136610
+      },
+      {
+        "id": "1358800",
+        "tokenPosition": 296,
+        "wordId": 2051240
+      },
+      {
+        "id": "1259210",
+        "tokenPosition": 299,
+        "wordId": 3675090
+      },
+      {
+        "id": "1007130",
+        "tokenPosition": 312,
+        "wordId": 13160
+      },
+      {
+        "id": "2121280",
+        "tokenPosition": 315,
+        "wordId": 110740
+      },
+      {
+        "id": "1360480",
+        "tokenPosition": 333,
+        "wordId": 1935270
+      },
+      {
+        "id": "1595125",
+        "tokenPosition": 333,
+        "wordId": 1935270
+      },
+      {
+        "id": "1007560",
+        "tokenPosition": 340,
+        "wordId": 11080
+      },
+      {
+        "id": "1012480",
+        "tokenPosition": 345,
+        "wordId": 242550
+      },
+      {
+        "id": "2434690",
+        "tokenPosition": 345,
+        "wordId": 242550
+      },
+      {
+        "id": "1533550",
+        "tokenPosition": 347,
+        "wordId": 17010
+      },
+      {
+        "id": "1320280",
+        "tokenPosition": 353,
+        "wordId": 395270
+      },
+      {
+        "id": "1483730",
+        "tokenPosition": 356,
+        "wordId": 862180
+      },
+      {
+        "id": "2845234",
+        "tokenPosition": 356,
+        "wordId": 862180
+      },
+      {
+        "id": "1289590",
+        "tokenPosition": 359,
+        "wordId": 3300890
+      },
+      {
+        "id": "1254760",
+        "tokenPosition": 362,
+        "wordId": 110930
+      },
+      {
+        "id": "2571360",
+        "tokenPosition": 364,
+        "wordId": 1674030
+      },
+      {
+        "id": "2672300",
+        "tokenPosition": 364,
+        "wordId": 1674030
+      },
+      {
+        "id": "2672310",
+        "tokenPosition": 364,
+        "wordId": 1674030
+      },
+      {
+        "id": "2672320",
+        "tokenPosition": 364,
+        "wordId": 1674030
+      },
+      {
+        "id": "2672330",
+        "tokenPosition": 364,
+        "wordId": 1674030
+      },
+      {
+        "id": "2820690",
+        "tokenPosition": 364,
+        "wordId": 1674030
+      },
+      {
+        "id": "2846378",
+        "tokenPosition": 364,
+        "wordId": 1674030
+      },
+      {
+        "id": "2846386",
+        "tokenPosition": 364,
+        "wordId": 1674030
+      },
+      {
+        "id": "1002290",
+        "tokenPosition": 380,
+        "wordId": 43140
+      },
+      {
+        "id": "1587040",
+        "tokenPosition": 394,
+        "wordId": 3819380
+      },
+      {
+        "id": "1593670",
+        "tokenPosition": 412,
+        "wordId": 2308920
+      },
+      {
+        "id": "1655700",
+        "tokenPosition": 415,
+        "wordId": 2229800
+      },
+      {
+        "id": "1550840",
+        "tokenPosition": 419,
+        "wordId": 700230
+      },
+      {
+        "id": "1538160",
+        "tokenPosition": 425,
+        "wordId": 1782450
+      },
+      {
+        "id": "2220820",
+        "tokenPosition": 425,
+        "wordId": 1782450
+      },
+      {
+        "id": "1474050",
+        "tokenPosition": 427,
+        "wordId": 348740
+      },
+      {
+        "id": "2834964",
+        "tokenPosition": 427,
+        "wordId": 348740
+      },
+      {
+        "id": "2165500",
+        "tokenPosition": 430,
+        "wordId": 813180
+      },
+      {
+        "id": "1423310",
+        "tokenPosition": 432,
+        "wordId": 83710
+      },
+      {
+        "id": "1457730",
+        "tokenPosition": 432,
+        "wordId": 83710
+      },
+      {
+        "id": "1620400",
+        "tokenPosition": 432,
+        "wordId": 83710
+      },
+      {
+        "id": "2083570",
+        "tokenPosition": 432,
+        "wordId": 83710
+      },
+      {
+        "id": "2754230",
+        "tokenPosition": 432,
+        "wordId": 83710
+      },
+      {
+        "id": "1378860",
+        "tokenPosition": 433,
+        "wordId": 647890
+      },
+      {
+        "id": "1983760",
+        "tokenPosition": 441,
+        "wordId": 2119670
+      },
+      {
+        "id": "1196670",
+        "tokenPosition": 446,
+        "wordId": 2229620
+      },
+      {
+        "id": "1606620",
+        "tokenPosition": 446,
+        "wordId": 2229620
+      },
+      {
+        "id": "2220800",
+        "tokenPosition": 446,
+        "wordId": 2229620
+      },
+      {
+        "id": "1204570",
+        "tokenPosition": 449,
+        "wordId": 88810
+      },
+      {
+        "id": "1603990",
+        "tokenPosition": 449,
+        "wordId": 88810
+      },
+      {
+        "id": "1600580",
+        "tokenPosition": 451,
+        "wordId": 849240
+      },
+      {
+        "id": "1138210",
+        "tokenPosition": 470,
+        "wordId": 2323250
+      },
+      {
+        "id": "1649700",
+        "tokenPosition": 478,
+        "wordId": 2297660
+      },
+      {
+        "id": "1333400",
+        "tokenPosition": 481,
+        "wordId": 3566960
+      },
+      {
+        "id": "1514320",
+        "tokenPosition": 486,
+        "wordId": 1160820
+      },
+      {
+        "id": "1454230",
+        "tokenPosition": 492,
+        "wordId": 195370
+      },
+      {
+        "id": "1258950",
+        "tokenPosition": 500,
+        "wordId": 2489290
+      },
+      {
+        "id": "1361130",
+        "tokenPosition": 502,
+        "wordId": 2084920
+      },
+      {
+        "id": "1499720",
+        "tokenPosition": 502,
+        "wordId": 2084920
+      },
+      {
+        "id": "1499730",
+        "tokenPosition": 502,
+        "wordId": 2084920
+      },
+      {
+        "id": "1384830",
+        "tokenPosition": 504,
+        "wordId": 2556930
+      },
+      {
+        "id": "1365800",
+        "tokenPosition": 507,
+        "wordId": 616500
+      },
+      {
+        "id": "1605940",
+        "tokenPosition": 513,
+        "wordId": 42960
+      },
+      {
+        "id": "1501020",
+        "tokenPosition": 519,
+        "wordId": 1381460
+      },
+      {
+        "id": "1224190",
+        "tokenPosition": 523,
+        "wordId": 1822410
+      },
+      {
+        "id": "2843271",
+        "tokenPosition": 523,
+        "wordId": 1822410
+      },
+      {
+        "id": "1203250",
+        "tokenPosition": 525,
+        "wordId": 1703390
+      },
+      {
+        "id": "1203260",
+        "tokenPosition": 525,
+        "wordId": 1703390
+      },
+      {
+        "id": "2227930",
+        "tokenPosition": 525,
+        "wordId": 1703390
+      },
+      {
+        "id": "1373970",
+        "tokenPosition": 529,
+        "wordId": 1171640
+      },
+      {
+        "id": "1264640",
+        "tokenPosition": 534,
+        "wordId": 2655560
+      },
+      {
+        "id": "1425780",
+        "tokenPosition": 538,
+        "wordId": 2493390
+      },
+      {
+        "id": "1425790",
+        "tokenPosition": 538,
+        "wordId": 2493390
+      },
+      {
+        "id": "1216210",
+        "tokenPosition": 540,
+        "wordId": 160990
+      },
+      {
+        "id": "1320650",
+        "tokenPosition": 540,
+        "wordId": 160990
+      },
+      {
+        "id": "1416220",
+        "tokenPosition": 540,
+        "wordId": 160990
+      },
+      {
+        "id": "1551240",
+        "tokenPosition": 540,
+        "wordId": 160990
+      },
+      {
+        "id": "1378520",
+        "tokenPosition": 543,
+        "wordId": 1200360
+      },
+      {
+        "id": "1003790",
+        "tokenPosition": 549,
+        "wordId": 2383610
+      },
+      {
+        "id": "1160820",
+        "tokenPosition": 557,
+        "wordId": 51730
+      },
+      {
+        "id": "1310730",
+        "tokenPosition": 560,
+        "wordId": 2893300
+      },
+      {
+        "id": "1429170",
+        "tokenPosition": 563,
+        "wordId": 2204400
+      },
+      {
+        "id": "1355120",
+        "tokenPosition": 566,
+        "wordId": 2517410
+      },
+      {
+        "id": "1504900",
+        "tokenPosition": 570,
+        "wordId": 71110
+      },
+      {
+        "id": "1197980",
+        "tokenPosition": 572,
+        "wordId": 1444840
+      },
+      {
+        "id": "1476450",
+        "tokenPosition": 634,
+        "wordId": 1045930
+      },
+      {
+        "id": "1291330",
+        "tokenPosition": 636,
+        "wordId": 3918030
+      },
+      {
+        "id": "1291560",
+        "tokenPosition": 636,
+        "wordId": 3918030
+      },
+      {
+        "id": "1306470",
+        "tokenPosition": 636,
+        "wordId": 3918030
+      },
+      {
+        "id": "1309670",
+        "tokenPosition": 636,
+        "wordId": 3918030
+      },
+      {
+        "id": "1508540",
+        "tokenPosition": 636,
+        "wordId": 3918030
+      },
+      {
+        "id": "1609820",
+        "tokenPosition": 636,
+        "wordId": 3918030
+      },
+      {
+        "id": "2643150",
+        "tokenPosition": 636,
+        "wordId": 3918030
+      },
+      {
+        "id": "1846480",
+        "tokenPosition": 640,
+        "wordId": 2499440
+      },
+      {
+        "id": "1204650",
+        "tokenPosition": 645,
+        "wordId": 193390
+      },
+      {
+        "id": "1250220",
+        "tokenPosition": 657,
+        "wordId": 62670
+      },
+      {
+        "id": "1605840",
+        "tokenPosition": 657,
+        "wordId": 62670
+      },
+      {
+        "id": "2256490",
+        "tokenPosition": 657,
+        "wordId": 62670
+      },
+      {
+        "id": "1049110",
+        "tokenPosition": 662,
+        "wordId": 2532350
+      },
+      {
+        "id": "1753020",
+        "tokenPosition": 667,
+        "wordId": 1858040
+      },
+      {
+        "id": "1347200",
+        "tokenPosition": 670,
+        "wordId": 392640
+      },
+      {
+        "id": "1140250",
+        "tokenPosition": 675,
+        "wordId": 2634390
+      },
+      {
+        "id": "1524720",
+        "tokenPosition": 680,
+        "wordId": 39920
+      },
+      {
+        "id": "1426250",
+        "tokenPosition": 684,
+        "wordId": 41210
+      },
+      {
+        "id": "1547320",
+        "tokenPosition": 688,
+        "wordId": 1656440
+      },
+      {
+        "id": "1114640",
+        "tokenPosition": 701,
+        "wordId": 918620
+      },
+      {
+        "id": "1591100",
+        "tokenPosition": 706,
+        "wordId": 1944770
+      },
+      {
+        "id": "2568020",
+        "tokenPosition": 708,
+        "wordId": 2754100
+      },
+      {
+        "id": "1590130",
+        "tokenPosition": 713,
+        "wordId": 77330
+      },
+      {
+        "id": "1594060",
+        "tokenPosition": 718,
+        "wordId": 248930
+      },
+      {
+        "id": "1602600",
+        "tokenPosition": 725,
+        "wordId": 252820
+      },
+      {
+        "id": "2017850",
+        "tokenPosition": 729,
+        "wordId": 1216720
+      },
+      {
+        "id": "2202100",
+        "tokenPosition": 736,
+        "wordId": 82860
+      },
+      {
+        "id": "1770610",
+        "tokenPosition": 740,
+        "wordId": 35040
+      },
+      {
+        "id": "2833473",
+        "tokenPosition": 740,
+        "wordId": 35040
+      },
+      {
+        "id": "1156640",
+        "tokenPosition": 750,
+        "wordId": 797860
+      },
+      {
+        "id": "1283240",
+        "tokenPosition": 753,
+        "wordId": 3625990
+      },
+      {
+        "id": "1339500",
+        "tokenPosition": 772,
+        "wordId": 3370330
+      },
+      {
+        "id": "1340450",
+        "tokenPosition": 772,
+        "wordId": 3370330
+      },
+      {
+        "id": "1376910",
+        "tokenPosition": 780,
+        "wordId": 2688510
+      },
+      {
+        "id": "1215070",
+        "tokenPosition": 783,
+        "wordId": 1031910
+      },
+      {
+        "id": "1213280",
+        "tokenPosition": 802,
+        "wordId": 361770
+      },
+      {
+        "id": "1313580",
+        "tokenPosition": 846,
+        "wordId": 63910
+      },
+      {
+        "id": "1207390",
+        "tokenPosition": 849,
+        "wordId": 544290
+      },
+      {
+        "id": "1214420",
+        "tokenPosition": 854,
+        "wordId": 191260
+      },
+      {
+        "id": "1232870",
+        "tokenPosition": 857,
+        "wordId": 2758680
+      }
+    ],
+    "addedDate": 1693078079828
+  },
+  "FL 3EX": {
+    "vocab": [
+      {
+        "id": "1392530",
+        "tokenPosition": 50,
+        "wordId": 2372100
+      },
+      {
+        "id": "1421210",
+        "tokenPosition": 52,
+        "wordId": 1799070
+      },
+      {
+        "id": "1518450",
+        "tokenPosition": 52,
+        "wordId": 1799070
+      },
+      {
+        "id": "1529520",
+        "tokenPosition": 52,
+        "wordId": 1799070
+      },
+      {
+        "id": "2098290",
+        "tokenPosition": 52,
+        "wordId": 1799070
+      },
+      {
+        "id": "2257550",
+        "tokenPosition": 52,
+        "wordId": 1799070
+      },
+      {
+        "id": "1461140",
+        "tokenPosition": 66,
+        "wordId": 51690
+      },
+      {
+        "id": "1445150",
+        "tokenPosition": 67,
+        "wordId": 161300
+      },
+      {
+        "id": "1445160",
+        "tokenPosition": 67,
+        "wordId": 161300
+      },
+      {
+        "id": "2252690",
+        "tokenPosition": 67,
+        "wordId": 161300
+      },
+      {
+        "id": "1204860",
+        "tokenPosition": 86,
+        "wordId": 71950
+      },
+      {
+        "id": "2826190",
+        "tokenPosition": 86,
+        "wordId": 71950
+      },
+      {
+        "id": "1364520",
+        "tokenPosition": 87,
+        "wordId": 461810
+      },
+      {
+        "id": "1366310",
+        "tokenPosition": 91,
+        "wordId": 2951800
+      },
+      {
+        "id": "1372670",
+        "tokenPosition": 99,
+        "wordId": 3194190
+      },
+      {
+        "id": "1251880",
+        "tokenPosition": 111,
+        "wordId": 3896520
+      },
+      {
+        "id": "1205100",
+        "tokenPosition": 119,
+        "wordId": 1171750
+      },
+      {
+        "id": "1350860",
+        "tokenPosition": 124,
+        "wordId": 1114640
+      },
+      {
+        "id": "2831062",
+        "tokenPosition": 124,
+        "wordId": 1114640
+      },
+      {
+        "id": "1913290",
+        "tokenPosition": 126,
+        "wordId": 43240
+      },
+      {
+        "id": "1100630",
+        "tokenPosition": 132,
+        "wordId": 412760
+      },
+      {
+        "id": "1594190",
+        "tokenPosition": 140,
+        "wordId": 797070
+      },
+      {
+        "id": "1329590",
+        "tokenPosition": 143,
+        "wordId": 349920
+      },
+      {
+        "id": "1576870",
+        "tokenPosition": 153,
+        "wordId": 43750
+      },
+      {
+        "id": "2080360",
+        "tokenPosition": 153,
+        "wordId": 43750
+      },
+      {
+        "id": "1157170",
+        "tokenPosition": 159,
+        "wordId": 3011810
+      },
+      {
+        "id": "1298670",
+        "tokenPosition": 159,
+        "wordId": 3011810
+      },
+      {
+        "id": "1567440",
+        "tokenPosition": 159,
+        "wordId": 3011810
+      },
+      {
+        "id": "1581900",
+        "tokenPosition": 159,
+        "wordId": 3011810
+      },
+      {
+        "id": "1595910",
+        "tokenPosition": 159,
+        "wordId": 3011810
+      },
+      {
+        "id": "1352860",
+        "tokenPosition": 161,
+        "wordId": 961430
+      },
+      {
+        "id": "1336820",
+        "tokenPosition": 176,
+        "wordId": 114080
+      },
+      {
+        "id": "1172460",
+        "tokenPosition": 179,
+        "wordId": 666070
+      },
+      {
+        "id": "1413940",
+        "tokenPosition": 183,
+        "wordId": 18570
+      },
+      {
+        "id": "2833293",
+        "tokenPosition": 183,
+        "wordId": 18570
+      },
+      {
+        "id": "1010350",
+        "tokenPosition": 190,
+        "wordId": 3781690
+      },
+      {
+        "id": "1633150",
+        "tokenPosition": 194,
+        "wordId": 2560400
+      },
+      {
+        "id": "1582210",
+        "tokenPosition": 202,
+        "wordId": 2673670
+      },
+      {
+        "id": "1242590",
+        "tokenPosition": 206,
+        "wordId": 1779360
+      },
+      {
+        "id": "1242600",
+        "tokenPosition": 206,
+        "wordId": 1779360
+      },
+      {
+        "id": "2839304",
+        "tokenPosition": 206,
+        "wordId": 1779360
+      },
+      {
+        "id": "1214630",
+        "tokenPosition": 217,
+        "wordId": 1697880
+      },
+      {
+        "id": "1556770",
+        "tokenPosition": 219,
+        "wordId": 1241710
+      },
+      {
+        "id": "1315840",
+        "tokenPosition": 222,
+        "wordId": 62810
+      },
+      {
+        "id": "2020680",
+        "tokenPosition": 222,
+        "wordId": 62810
+      },
+      {
+        "id": "2273940",
+        "tokenPosition": 222,
+        "wordId": 62810
+      },
+      {
+        "id": "1547720",
+        "tokenPosition": 224,
+        "wordId": 3143050
+      },
+      {
+        "id": "1591270",
+        "tokenPosition": 224,
+        "wordId": 3143050
+      },
+      {
+        "id": "1366410",
+        "tokenPosition": 227,
+        "wordId": 2007910
+      },
+      {
+        "id": "1366420",
+        "tokenPosition": 227,
+        "wordId": 2007910
+      },
+      {
+        "id": "1580640",
+        "tokenPosition": 227,
+        "wordId": 2007910
+      },
+      {
+        "id": "2149890",
+        "tokenPosition": 227,
+        "wordId": 2007910
+      },
+      {
+        "id": "1490010",
+        "tokenPosition": 229,
+        "wordId": 78690
+      },
+      {
+        "id": "1221520",
+        "tokenPosition": 234,
+        "wordId": 194660
+      },
+      {
+        "id": "2006580",
+        "tokenPosition": 234,
+        "wordId": 194660
+      },
+      {
+        "id": "2233680",
+        "tokenPosition": 234,
+        "wordId": 194660
+      },
+      {
+        "id": "2233690",
+        "tokenPosition": 234,
+        "wordId": 194660
+      },
+      {
+        "id": "2742890",
+        "tokenPosition": 244,
+        "wordId": 43820
+      },
+      {
+        "id": "2846738",
+        "tokenPosition": 244,
+        "wordId": 43820
+      },
+      {
+        "id": "2571360",
+        "tokenPosition": 248,
+        "wordId": 1674030
+      },
+      {
+        "id": "2672300",
+        "tokenPosition": 248,
+        "wordId": 1674030
+      },
+      {
+        "id": "2672310",
+        "tokenPosition": 248,
+        "wordId": 1674030
+      },
+      {
+        "id": "2672320",
+        "tokenPosition": 248,
+        "wordId": 1674030
+      },
+      {
+        "id": "2672330",
+        "tokenPosition": 248,
+        "wordId": 1674030
+      },
+      {
+        "id": "2820690",
+        "tokenPosition": 248,
+        "wordId": 1674030
+      },
+      {
+        "id": "2846378",
+        "tokenPosition": 248,
+        "wordId": 1674030
+      },
+      {
+        "id": "2846386",
+        "tokenPosition": 248,
+        "wordId": 1674030
+      },
+      {
+        "id": "1211510",
+        "tokenPosition": 265,
+        "wordId": 16070
+      },
+      {
+        "id": "1006780",
+        "tokenPosition": 267,
+        "wordId": 43390
+      },
+      {
+        "id": "1467150",
+        "tokenPosition": 271,
+        "wordId": 2833270
+      },
+      {
+        "id": "1531100",
+        "tokenPosition": 279,
+        "wordId": 2456300
+      },
+      {
+        "id": "1277080",
+        "tokenPosition": 284,
+        "wordId": 2208340
+      },
+      {
+        "id": "2024490",
+        "tokenPosition": 286,
+        "wordId": 62720
+      },
+      {
+        "id": "1409110",
+        "tokenPosition": 289,
+        "wordId": 115420
+      },
+      {
+        "id": "1477190",
+        "tokenPosition": 316,
+        "wordId": 743030
+      },
+      {
+        "id": "1466920",
+        "tokenPosition": 330,
+        "wordId": 124190
+      },
+      {
+        "id": "2174560",
+        "tokenPosition": 330,
+        "wordId": 124190
+      },
+      {
+        "id": "1504770",
+        "tokenPosition": 332,
+        "wordId": 88890
+      },
+      {
+        "id": "1370760",
+        "tokenPosition": 333,
+        "wordId": 3536140
+      },
+      {
+        "id": "2013800",
+        "tokenPosition": 341,
+        "wordId": 3746750
+      },
+      {
+        "id": "2013805",
+        "tokenPosition": 341,
+        "wordId": 3746750
+      },
+      {
+        "id": "1380040",
+        "tokenPosition": 353,
+        "wordId": 285980
+      },
+      {
+        "id": "1251810",
+        "tokenPosition": 359,
+        "wordId": 222250
+      },
+      {
+        "id": "1423310",
+        "tokenPosition": 361,
+        "wordId": 83710
+      },
+      {
+        "id": "1457730",
+        "tokenPosition": 361,
+        "wordId": 83710
+      },
+      {
+        "id": "1620400",
+        "tokenPosition": 361,
+        "wordId": 83710
+      },
+      {
+        "id": "2083570",
+        "tokenPosition": 361,
+        "wordId": 83710
+      },
+      {
+        "id": "2754230",
+        "tokenPosition": 361,
+        "wordId": 83710
+      },
+      {
+        "id": "1352320",
+        "tokenPosition": 369,
+        "wordId": 3893790
+      },
+      {
+        "id": "1200390",
+        "tokenPosition": 372,
+        "wordId": 2263480
+      },
+      {
+        "id": "1256170",
+        "tokenPosition": 378,
+        "wordId": 183690
+      },
+      {
+        "id": "1482010",
+        "tokenPosition": 382,
+        "wordId": 2326220
+      },
+      {
+        "id": "1592100",
+        "tokenPosition": 383,
+        "wordId": 2916220
+      },
+      {
+        "id": "1257800",
+        "tokenPosition": 385,
+        "wordId": 3691620
+      },
+      {
+        "id": "1293850",
+        "tokenPosition": 390,
+        "wordId": 1168380
+      },
+      {
+        "id": "1113100",
+        "tokenPosition": 398,
+        "wordId": 1743550
+      },
+      {
+        "id": "1551530",
+        "tokenPosition": 402,
+        "wordId": 2697380
+      },
+      {
+        "id": "1632920",
+        "tokenPosition": 410,
+        "wordId": 3540310
+      },
+      {
+        "id": "1309650",
+        "tokenPosition": 413,
+        "wordId": 314150
+      },
+      {
+        "id": "2423450",
+        "tokenPosition": 413,
+        "wordId": 314150
+      },
+      {
+        "id": "1150420",
+        "tokenPosition": 415,
+        "wordId": 1035470
+      },
+      {
+        "id": "1483190",
+        "tokenPosition": 415,
+        "wordId": 1035470
+      },
+      {
+        "id": "1486360",
+        "tokenPosition": 415,
+        "wordId": 1035470
+      },
+      {
+        "id": "1604890",
+        "tokenPosition": 420,
+        "wordId": 1820330
+      },
+      {
+        "id": "1298910",
+        "tokenPosition": 422,
+        "wordId": 2944320
+      },
+      {
+        "id": "2450770",
+        "tokenPosition": 422,
+        "wordId": 2944320
+      },
+      {
+        "id": "1375610",
+        "tokenPosition": 429,
+        "wordId": 352830
+      },
+      {
+        "id": "1532910",
+        "tokenPosition": 429,
+        "wordId": 352830
+      },
+      {
+        "id": "1611000",
+        "tokenPosition": 429,
+        "wordId": 352830
+      },
+      {
+        "id": "2138260",
+        "tokenPosition": 429,
+        "wordId": 352830
+      },
+      {
+        "id": "1600900",
+        "tokenPosition": 440,
+        "wordId": 392870
+      },
+      {
+        "id": "2100460",
+        "tokenPosition": 440,
+        "wordId": 392870
+      },
+      {
+        "id": "1470530",
+        "tokenPosition": 534,
+        "wordId": 2628240
+      },
+      {
+        "id": "1605820",
+        "tokenPosition": 538,
+        "wordId": 1548290
+      },
+      {
+        "id": "1281020",
+        "tokenPosition": 540,
+        "wordId": 3409460
+      },
+      {
+        "id": "1465580",
+        "tokenPosition": 550,
+        "wordId": 1369710
+      },
+      {
+        "id": "1546640",
+        "tokenPosition": 550,
+        "wordId": 1369710
+      },
+      {
+        "id": "1577980",
+        "tokenPosition": 550,
+        "wordId": 1369710
+      },
+      {
+        "id": "1163170",
+        "tokenPosition": 558,
+        "wordId": 2609250
+      },
+      {
+        "id": "1296400",
+        "tokenPosition": 561,
+        "wordId": 13530
+      },
+      {
+        "id": "1586840",
+        "tokenPosition": 561,
+        "wordId": 13530
+      },
+      {
+        "id": "1156800",
+        "tokenPosition": 563,
+        "wordId": 543840
+      },
+      {
+        "id": "1346240",
+        "tokenPosition": 566,
+        "wordId": 747020
+      },
+      {
+        "id": "1724990",
+        "tokenPosition": 569,
+        "wordId": 1780550
+      },
+      {
+        "id": "1378520",
+        "tokenPosition": 575,
+        "wordId": 1200390
+      },
+      {
+        "id": "1169780",
+        "tokenPosition": 581,
+        "wordId": 3273500
+      },
+      {
+        "id": "1213770",
+        "tokenPosition": 586,
+        "wordId": 2943380
+      },
+      {
+        "id": "1259290",
+        "tokenPosition": 586,
+        "wordId": 2943380
+      },
+      {
+        "id": "1365450",
+        "tokenPosition": 586,
+        "wordId": 2943380
+      },
+      {
+        "id": "1772790",
+        "tokenPosition": 586,
+        "wordId": 2943380
+      },
+      {
+        "id": "2255060",
+        "tokenPosition": 586,
+        "wordId": 2943380
+      }
+    ],
+    "addedDate": 1693078164902
+  },
+  "足跡": {
+    "japanese": "人の顔立てる日常茶飯事\n俺は違うとまかり通す中身\n足を固めると未決に手紙\nホワイトウルフと彼は48\n考えるより心が率先して\n快楽を得るアタリは混ぜ物で\n本物は空気に便乗せえへんし\n金線を語る元少年A\n男が漢に惚れる出来事\nそれより美しい事は無いんだと\n彼の傷が許されなくて飛んだ\n学ぶ事がある足跡から\nおかんを大切にできない奴は\n何一つとして守れない奴さ\nスタジオギャンスターは経験不足\nホラを吹くバティマンはまたケツを拭く\n事の全てから術を見出す\n志す事柄に足を走らす\n焦りを見せれば足元が見える\n心を裏切れば首が飛ぶんだ\n俺は俺の判断に本腰\nどこに居たって赤落ちの話\n足跡や人からいただく知識に\n常に歩かない同じ道\n決めた決めた折角決めた\nマトか日付けか兎に角決めた\n道具に連携　呼吸を合わせる\n反復　すりこみ　習慣　実話\n地道が1番　電話は2番\n惨事になったら現場に居ない\n複雑じゃないぜ福沢諭吉\n公園の草むら　角の自動販売機\nブロック塀の脇　路地裏の車の下\nポストの裏　置いてある証拠\n回収する　素早く　燃やす　流す　無くす\n話自体帰るまでが遠足\n行きがけは駄賃\n地図は頭の中シッカリと叩き込んでる\n新しい服に袖を通す\n手袋を捨て靴紐を結ぶ\n常に同じ道は歩かない　同じ轍は踏まない\n事の全てから術を見出す\n志す事柄に足を走らす\n焦りを見せれば足元が見える\n心を裏切れば首が飛ぶんだ\n俺は俺の判断に本腰\nどこに居たって赤落ちの話\n足跡や人からいただく知識に\n常に歩かない同じ道",
+    "addedDate": 1692916945205
+  }
+}

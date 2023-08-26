@@ -131,6 +131,24 @@ export const saveReadings = (readings) => {
   })
 }
 
+export const saveLists = (lists) => {
+  return fetch('http://localhost:9999/lists', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ ...lists})
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation: ', error);
+  })
+}
 
 export function removeCharacters(inputVal, characterArray) {
   for (let i = 0; i < characterArray.length; i++) {

@@ -49,9 +49,17 @@ function App() {
   const [staticList, setStaticList] = useState([])
   const [playerInterval, setPlayerInterval] = useState(10)
   const [appMode, setAppMode] = useState('vocabulary')
+  const [vocabLists, setVocabLists] = useState({})
+  const [vocabListsActive, setVocabListsActive] = useState('')
+  const [vocabListsSelectorOpen, setVocabListsSelectorOpen] = useState(false)
+  const [activeListIds, setActiveListIds] = useState([])
 
 window.tokenize = tokenize
 window.searchExact = searchExact
+
+useEffect(() => {
+  console.log({activeListIds, activeVocabulary})
+}, [activeListIds, activeVocabulary])
 
   const studyVocabAddUserDataEntry = (entry) => {
     setUserDataEntries([...userDataEntries, entry])
@@ -187,6 +195,10 @@ window.searchExact = searchExact
     console.log(results)    
   }, [results])
 
+  useEffect(() => {
+    console.log(vocabLists)
+  }, [vocabLists])
+
   const onInputChange = (e) => {
     setSearchValue(String(e.target.value))
   }
@@ -212,6 +224,12 @@ window.searchExact = searchExact
   const clearMinMaxScore = () => {
     setMinScore(-10)
     setMaxScore(10)
+  }
+
+  const onVocabListInputChange = () => {
+    // setActiveListIds(vocabLists[list].vocab.map(v => v.id))
+
+    console.log('onVocabListInputChange')
   }
 
   const windowCountDown = (numberOfItems) => {
@@ -288,7 +306,13 @@ window.searchExact = searchExact
         .then((res) => res.json())
         .then((jsonResponseData) => setUserData(jsonResponseData))
     }
-  })
+  }, [])
+
+  useEffect(() => {
+    fetch('http://localhost:8080/lists.json', { cache: "no-store" })
+      .then((res) => res.json())
+      .then((jsonResponseData) => setVocabLists(jsonResponseData))
+  }, [])
 
   // handles the users history and vocab on the left side of the application
   useEffect(() => {
@@ -373,7 +397,19 @@ window.searchExact = searchExact
             return f.averageScore >= minScoreGuard && f.averageScore <= maxScoreGuard ? true : false
           })
 
-        setActiveVocabulary(filteredVocabList.sort((a, b) => {
+        setActiveVocabulary(filteredVocabList
+          .filter(f => {
+            if(vocabListsActive !== '') {
+              if(activeListIds.indexOf(f.id) > -1) {
+                return true
+              } else {
+                return false
+              }
+            } else {
+              return true
+            }
+          })
+          .sort((a, b) => {
           let aScore = userData.words[a.id].events
             .filter((f) => {
               if (f.type === 'score') {
@@ -425,7 +461,9 @@ window.searchExact = searchExact
     tagListExactSearch,
     maxScore,
     minScore,
-    userDataEntries
+    userDataEntries,
+    activeListIds,
+    vocabListsActive
   ])
 
   useEffect(() => {
@@ -440,13 +478,13 @@ window.searchExact = searchExact
           <span className="w-full flex justify-between">
             <input id="search-input" className="border-2 rounded-lg w-full p-2 pl-4" placeholder={'Search'} type="text" onChange={onInputChange} />
             <button
-              style={{ transition: 'all 300ms', width: '150px' }}
+              style={{ transition: 'all 300ms' }}
               className={`${exactSearch ? activeClass : inactiveClass} text-sm px-4 rounded-lg ml-2 inline-block`}
               onClick={() => {
                 setExactSearch(!exactSearch)
               }
               }
-            >Exact Search</button>
+            >Exact</button>
             {/* <button
               style={{ transition: 'all 300ms', width: '150px' }}
               className={`${exactKanjiKana ? activeClass : inactiveClass} text-sm px-4 rounded-lg ml-2 inline-block`}
@@ -561,7 +599,7 @@ window.searchExact = searchExact
             <div className="flex pb-4">
               <div className="relative w-full">
                 <img
-                  alt="Selet List"
+                  alt="Selet Tag"
                   className="absolute"
                   style={{ transition: 'all 200ms', right: '16px', top: '16px', transform: listSelectorOpen ? '' : 'rotate(180deg' }}
                   src={caret}
@@ -614,6 +652,68 @@ window.searchExact = searchExact
                 }
               >Exact</button>
             </div>
+            <div className="flex pb-4">
+              <div className="relative w-full flex">
+                <img
+                  alt="Selet List"
+                  className="absolute"
+                  style={{ transition: 'all 200ms', right: '66px', top: '16px', transform: vocabListsSelectorOpen ? '' : 'rotate(180deg' }}
+                  src={caret}
+                  onClick={() => {
+                    setVocabListsSelectorOpen(!vocabListsSelectorOpen)
+                    document.querySelector('.vocab-list-selector-option-0').focus()
+                  }}
+                />
+                <div className={`${vocabListsSelectorOpen ? '' : 'pointer-events-none opacity-0'} absolute bg-white border-2 rounded-lg w-full p-2`} style={{ transition: 'all 200ms', top: '48px', zIndex: '10' }}>
+                  {Object.keys(vocabLists)
+                  // .sort(function (a, b) {
+                  //   // Split the date by '/' and create a new Date object
+                  //   let aDate = new Date('2023/' + a); // using 2023 as a dummy year
+                  //   let bDate = new Date('2023/' + b); // using 2023 as a dummy year
+
+                  //   // Now, compare the two dates
+                  //   if (aDate > bDate) {
+                  //     return -1;
+                  //   } else if (aDate < bDate) {
+                  //     return 1;
+                  //   } else {
+                  //     return 0;
+                  //   }
+                  // })
+                  .map((list, index) => {
+                    return (
+                      <div className={`p-2 vocab-list-selector-option-${index} hover:text-zinc-700 hover:bg-zinc-100 cursor-pointer rounded-lg`} key={index} onClick={() => {
+                        setVocabListsSelectorOpen(!vocabListsSelectorOpen)
+                        document.querySelector('#vocab-list-search-tag-input').value = list
+                        // setTagListSearchValue(list)
+                        setVocabListsActive(list)
+                        setActiveListIds(vocabLists[list].vocab.map(v => v.id))
+                      }}>
+                        {list}
+                      </div>
+                    )
+                  })}
+                </div>
+                <input
+                  id="vocab-list-search-tag-input"
+                  className="border-2 rounded-lg w-full p-2 pl-4 text-sm"
+                  placeholder={'List Search'}
+                  type="text"
+                  onChange={onVocabListInputChange}
+                  autoComplete="off"
+                />
+                <button
+                  onClick={() => {
+                    setVocabListsActive('')
+                    setActiveListIds([])
+                    document.querySelector('#vocab-list-search-tag-input').value = ''
+                  }}
+                  style={{ transition: 'all 300ms' }}
+                  className={`${inactiveClass} text-sm px-4 rounded-lg ml-2 inline-block`}
+                >X</button>
+              </div>
+            </div>
+            {console.log(activeVocabulary)}
             {
               userData && appMode !== 'reading' && isPlaying === false && activeVocabulary
                 .slice(0, 100)
@@ -789,6 +889,8 @@ window.searchExact = searchExact
                   <div className={`bg-white w-full`}>
                     <div className='reading-text mt-2 mb-4'>
                       <Reading 
+                        lists={vocabLists}
+                        listsSetter={setVocabLists}
                         userData={userData}
                         createScore={createScore}
                         saveUserData={saveUserData}

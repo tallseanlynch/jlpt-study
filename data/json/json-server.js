@@ -86,6 +86,23 @@ app.post('/readings', (req, res) => {
     });
 });
 
+app.post('/lists', (req, res) => {
+  const jsonData = req.body;
+  const sourcePath = './lists.json';
+  const destinationPath = `./backups/lists--${formatDate(new Date())}.json`;
+
+  copyFile(sourcePath, destinationPath, jsonData)
+    .then(() => {
+      console.log('lists.json copied and updated successfully');
+      res.status(200).send(JSON.stringify({msg: 'JSON data saved successfully.'}));
+    })
+    .catch((err) => {
+      console.error('Failed to copy the file: readings.json', err);
+      res.status(500).send(JSON.stringify({msg: 'Failed to save JSON data.'}));
+    });
+});
+
+
 app.post('/save-json', (req, res) => {
   const jsonData = req.body;
   const sourcePath = './db.json';
