@@ -53,6 +53,8 @@ function App() {
   const [vocabListsActive, setVocabListsActive] = useState('')
   const [vocabListsSelectorOpen, setVocabListsSelectorOpen] = useState(false)
   const [activeListIds, setActiveListIds] = useState([])
+  const [minEventNumber, setMinEventNumber] = useState(0)
+  const [maxEventNumber, setMaxEventNumber] = useState(20)
 
 window.tokenize = tokenize
 window.searchExact = searchExact
@@ -226,6 +228,20 @@ useEffect(() => {
     setMaxScore(10)
   }
 
+  const onMinEventNumberInputChange = (e) => {
+    setMinEventNumber(String(e.target.value))
+  }
+
+  const onMaxEventNumberInputChange = (e) => {
+    setMaxEventNumber(String(e.target.value))
+  }
+
+  const clearMinMaxEventNumber = () => {
+    setMinEventNumber(0)
+    setMaxEventNumber(100)
+  }
+
+
   const onVocabListInputChange = () => {
     // setActiveListIds(vocabLists[list].vocab.map(v => v.id))
 
@@ -300,12 +316,47 @@ useEffect(() => {
   //   userDataEntries
   // ])
 
+  function getFormattedDates() {
+    const now = new Date();
+  
+    const getFormattedDate = (date) => `${date.getMonth() + 1}/${date.getDate()}`;
+  
+    const addDays = (date, days) => {
+      const copy = new Date(Number(date));
+      copy.setDate(date.getDate() + days);
+      return copy;
+    };
+  
+    const addMonths = (date, months) => {
+      const copy = new Date(Number(date));
+      copy.setMonth(date.getMonth() + months);
+      return copy;
+    };
+  
+    return [
+      getFormattedDate(now),                   // Today
+      getFormattedDate(addDays(now, -1)),      // Yesterday
+      getFormattedDate(addDays(now, -2)),      // The day before
+      getFormattedDate(addDays(now, -7)),      // One week ago
+      getFormattedDate(addDays(now, -14)),     // Two weeks ago
+      getFormattedDate(addMonths(now, -1)),    // A month ago
+      getFormattedDate(addMonths(now, -2)),    // Two months ago
+      getFormattedDate(addMonths(now, -3)),    // Three months ago
+      getFormattedDate(addMonths(now, -4)),    // Four months ago
+      getFormattedDate(addMonths(now, -5)),    // Five months ago
+      getFormattedDate(addMonths(now, -6))     // Six months ago
+    ].join(', ');
+  }
+  
   useEffect(() => {
     if (userData === null) {
       fetch('http://localhost:8080/db.json', { cache: "no-store" })
         .then((res) => res.json())
         .then((jsonResponseData) => setUserData(jsonResponseData))
-    }
+        const studyDates = getFormattedDates()
+        console.log('copied study dates', studyDates);
+        navigator.clipboard.writeText(studyDates)      
+      }
   }, [])
 
   useEffect(() => {
@@ -410,44 +461,49 @@ useEffect(() => {
             }
           })
           .sort((a, b) => {
-          let aScore = userData.words[a.id].events
-            .filter((f) => {
-              if (f.type === 'score') {
-                return true
-              } else {
-                return false
-              }
-            })
-
-          if (aScore.length > 0) {
-            aScore = aScore.map(s => s.s)
-              .reduce((accumulator, currentValue) => {
-                return accumulator + currentValue
+            let aScore = userData.words[a.id].events
+              .filter((f) => {
+                if (f.type === 'score') {
+                  return true
+                } else {
+                  return false
+                }
               })
-          } else {
-            aScore = -100
-          }
 
-          let bScore = userData.words[b.id].events
-            .filter((f) => {
-              if (f.type === 'score') {
-                return true
-              } else {
-                return false
-              }
-            })
+            if (aScore.length > 0) {
+              aScore = aScore.map(s => s.s)
+                .reduce((accumulator, currentValue) => {
+                  return accumulator + currentValue
+                })
+            } else {
+              aScore = -100
+            }
 
-          if (bScore.length > 0) {
-            bScore = bScore.map(s => s.s)
-              .reduce((accumulator, currentValue) => {
-                return accumulator + currentValue
+            let bScore = userData.words[b.id].events
+              .filter((f) => {
+                if (f.type === 'score') {
+                  return true
+                } else {
+                  return false
+                }
               })
-          } else {
-            bScore = -100
-          }
 
-          return aScore - bScore
-        }))
+            if (bScore.length > 0) {
+              bScore = bScore.map(s => s.s)
+                .reduce((accumulator, currentValue) => {
+                  return accumulator + currentValue
+                })
+            } else {
+              bScore = -100
+            }
+
+            return aScore - bScore
+          })
+          .filter(i => 
+            userData.words[i.id].events.length >= minEventNumber &&
+            userData.words[i.id].events.length <= maxEventNumber
+          )
+        )
       }
     }
 
@@ -461,6 +517,8 @@ useEffect(() => {
     tagListExactSearch,
     maxScore,
     minScore,
+    minEventNumber,
+    maxEventNumber,
     userDataEntries,
     activeListIds,
     vocabListsActive
@@ -572,6 +630,7 @@ useEffect(() => {
                 }
               >Exact</button>
             </div>
+            <div className="flex pb-1 text-zinc-500 text-sm">Score</div>
             <div className="flex pb-4">
               <input
                 id="list-search-input"
@@ -591,6 +650,30 @@ useEffect(() => {
               />
               <button
                 onClick={clearMinMaxScore}
+                style={{ transition: 'all 300ms' }}
+                className={`${inactiveClass} text-sm px-4 rounded-lg ml-2 inline-block`}
+              >X</button>
+            </div>
+            <div className="flex pb-1 text-zinc-500 text-sm">Occurances</div>
+            <div className="flex pb-4">
+              <input
+                id="event-number-search-input"
+                className="border-2 rounded-lg w-full p-2 pl-4 mr-1"
+                placeholder={'Min Score'}
+                type="text"
+                onChange={onMinEventNumberInputChange}
+                value={minEventNumber}
+              />
+              <input
+                id="event-number-search-input"
+                className="border-2 rounded-lg w-full p-2 pl-4 ml-1"
+                placeholder={'Max Score'}
+                type="text"
+                onChange={onMaxEventNumberInputChange}
+                value={maxEventNumber}
+              />
+              <button
+                onClick={clearMinMaxEventNumber}
                 style={{ transition: 'all 300ms' }}
                 className={`${inactiveClass} text-sm px-4 rounded-lg ml-2 inline-block`}
               >X</button>

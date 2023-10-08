@@ -140,38 +140,6 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
         })
     }, [tokens])
 
-    useEffect(() => {
-      console.log({readingVocab, activeReading, selectedVocab, readings})
-      let ids = []
-      if(readingVocab.length > 0) {
-        let saveReadingVocab = readingVocab.map(rv => {
-          return {
-            id: rv.id,
-            tokenPosition: rv.tokenPosition,
-            wordId: rv.wordId
-          }
-        })
-        const noDupesSaveReadingVocab = saveReadingVocab.filter(srv => {
-          if(ids.indexOf(srv.id) === -1) {
-            ids.push(srv.id)
-            return true
-          } else { return false }
-        })
-
-        const noDupesSaveReadingVocabStudying = noDupesSaveReadingVocab.filter(f => {
-          return userData.words[f.id] !== undefined
-        })
-
-        
-        console.log({
-          readingVocab,
-          saveReadingVocab,
-          noDupesSaveReadingVocab,
-          noDupesSaveReadingVocabStudying,
-          userData
-        })
-      }
-    }, [readingVocab, activeReading, selectedVocab, readings, userData])
 
     // const testVocabId = (score, id) => {
     //   let userDataCopy = { ...userData }
@@ -231,7 +199,7 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
         const [newReadingName, setNewReadingName] = useState('')
         const [newReadingJapanese, setNewReadingJapanese] = useState('')
 
-        const updateReadings = useCallback(() => {
+        const saveNewList = useCallback(() => {
           console.log({readingVocab, activeReading, selectedVocab, readings})
           let ids = []
           if(readingVocab.length > 0) {
@@ -252,22 +220,63 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
             const noDupesSaveReadingVocabStudying = noDupesSaveReadingVocab.filter(f => {
               return userData.words[f.id] !== undefined
             })
-
+    
+            
             const newLists = { ...lists, [activeReading]: {vocab: noDupesSaveReadingVocabStudying, addedDate: new Date().getTime() }}
             
-            console.log({
-              newLists,
-              readingVocab,
-              saveReadingVocab,
-              noDupesSaveReadingVocab,
-              noDupesSaveReadingVocabStudying,
-              userData
-            })
+            // console.log({
+            //   newLists,
+            //   readingVocab,
+            //   saveReadingVocab,
+            //   noDupesSaveReadingVocab,
+            //   noDupesSaveReadingVocabStudying,
+            //   userData
+            // })
 
             listsSetter(newLists)
             saveLists(newLists)
 
-          }
+        }
+        }, [readings])
+    
+
+        const updateReadings = useCallback(() => {
+          // console.log({readingVocab, activeReading, selectedVocab, readings})
+          // let ids = []
+          // if(readingVocab.length > 0) {
+          //   let saveReadingVocab = readingVocab.map(rv => {
+          //     return {
+          //       id: rv.id,
+          //       tokenPosition: rv.tokenPosition,
+          //       wordId: rv.wordId
+          //     }
+          //   })
+          //   const noDupesSaveReadingVocab = saveReadingVocab.filter(srv => {
+          //     if(ids.indexOf(srv.id) === -1) {
+          //       ids.push(srv.id)
+          //       return true
+          //     } else { return false }
+          //   })
+    
+          //   const noDupesSaveReadingVocabStudying = noDupesSaveReadingVocab.filter(f => {
+          //     return userData.words[f.id] !== undefined
+          //   })
+
+          //   const newLists = { ...lists, [activeReading]: {vocab: noDupesSaveReadingVocabStudying, addedDate: new Date().getTime() }}
+            
+          //   console.log({
+          //     newLists,
+          //     readingVocab,
+          //     saveReadingVocab,
+          //     noDupesSaveReadingVocab,
+          //     noDupesSaveReadingVocabStudying,
+          //     userData
+          //   })
+
+          //   listsSetter(newLists)
+          //   saveLists(newLists)
+
+          // }
     
 
           let readingsCopy = { ...readings }
@@ -362,7 +371,15 @@ function parseAndRenderString(readingTokens, parentSetter, WordComponent, readin
                 console.log('save reading')
                 updateReadings()
               }}
-            >Save</button>
+            >Save Reading</button>
+            <button
+              style={{ transition: 'all 300ms'}}
+              className={`${inactiveClass} px-4 py-2 mr-2 text-sm rounded-lg inline-block`}
+              onClick={() => {
+                console.log('save list')
+                saveNewList()
+              }}
+            >Save List</button>
             {/* <button
               style={{ transition: 'all 300ms'}}
               className={`${editingReading ? activeClass : inactiveClass} px-4 py-2 mr-2 text-sm rounded-lg inline-block`}
